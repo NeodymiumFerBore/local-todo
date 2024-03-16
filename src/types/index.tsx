@@ -11,7 +11,6 @@ export class GUID {
       if (GUID.validate(str)) this.str = str;
       else throw new Error("String '" + str + "' is not a valid GUID");
     }
-    console.log(this.str);
   }
 
   toString() {
