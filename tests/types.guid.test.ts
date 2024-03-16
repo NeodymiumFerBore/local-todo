@@ -1,4 +1,10 @@
 import { GUID } from "../src/types";
+import { webcrypto } from "node:crypto";
+
+// Setup crypto module for jest jsdom environment
+Object.defineProperty(globalThis, "crypto", {
+  value: webcrypto,
+});
 
 describe("GUID class", () => {
   it("should generate valid GUID", () => {
