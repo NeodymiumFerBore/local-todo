@@ -1,0 +1,30 @@
+name: Quality
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  pull_request:
+  push:
+    branches:
+    - "!main"
+
+jobs:
+  quality:
+    name: Quality
+    runs-on: ubuntu-latest
+    steps:
+    # https://github.com/actions/checkout/issues/1418
+    - uses: actions/checkout@v4
+      with:
+        ref: "${{ github.head_ref || github.ref }}"
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Lint
+      run: npm run lint
+
+    - name: Test
+      run: npm run test
