@@ -25,6 +25,9 @@ jobs:
         node-version: 21
         cache: 'npm'
 
+    - name: Setup
+      run: npm ci
+
     - name: Build
       run: npm run build
 
