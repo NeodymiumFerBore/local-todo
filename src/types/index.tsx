@@ -24,10 +24,9 @@ export class GUID {
 
 export type TTodoItem = {
   id: GUID;
-  ownerList: TTodoList; // A TodoItem must be owned by a TodoList
   title: string;
   description: string;
-  status: string;
+  done: boolean;
 };
 
 export type TTodoList = {
