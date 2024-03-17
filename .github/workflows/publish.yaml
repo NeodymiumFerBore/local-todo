@@ -6,6 +6,9 @@ on:
     branches:
     - main
 
+env:
+  BASE_PATH: /local-todo/
+
 jobs:
   quality:
     name: Quality
