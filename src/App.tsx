@@ -15,7 +15,6 @@ export default function App() {
   // });
 
   const [todoLists, setTodoLists] = useState<TTodoList[]>([]);
-  //const [currentState, setCurrentState] = useState<TCurrentState>({});
 
   // useEffect(() => {
   //   localStorage.setItem("ITEMS", JSON.stringify(todos));
@@ -33,42 +32,22 @@ export default function App() {
     setTodoLists((currentLists) => {
       return [...currentLists, newList];
     });
-    //setSelectedList(newList);
   }
-
-  // function setSelectedList(list: TTodoList) {
-  //   setCurrentState((currState) => {
-  //     return {
-  //       ...currState,
-  //       selectedTodoList: list,
-  //     };
-  //   });
-  // }
 
   return (
     <>
       <CssVarsProvider defaultMode="system">
         <ThemeToggle />
-        {/* <CurrentStateContext.Provider value={{ currentState, setCurrentState }}> */}
         <TodoListsContext.Provider value={{ todoLists, setTodoLists }}>
           <h1 className="header">Todo List</h1>
           <Button onClick={addList}>Add List</Button>
-          {/* <p>Selected list: {currentState.selectedTodoList?.id.toString()}</p> */}
-          {/* {currentState.selectedTodoList && <NewTodoForm />} */}
           <div>
             {todoLists.length === 0 && "No TodoList"}
             {todoLists.map((list) => {
-              return (
-                <TodoList
-                  // {...list}
-                  key={list.id.toString()}
-                  thisTodoList={list}
-                />
-              );
+              return <TodoList key={list.id.toString()} thisTodoList={list} />;
             })}
           </div>
         </TodoListsContext.Provider>
-        {/* </CurrentStateContext.Provider> */}
       </CssVarsProvider>
     </>
   );
