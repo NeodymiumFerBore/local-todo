@@ -5,8 +5,7 @@ on:
   workflow_call:
   pull_request:
   push:
-    branches:
-    - "!main"
+    branches-ignore: [main]
 
 jobs:
   quality:
