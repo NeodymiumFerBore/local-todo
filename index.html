@@ -7,6 +7,49 @@
     <title>Local TODO</title>
   </head>
   <body>
+    <!-- TODO: implement async defer library loading -->
+    <!-- <script src="https://accounts.google.com/gsi/client" async defer></script> -->
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <button id="google-signin-btn" onclick="client.requestAccessToken();">
+      Sign in with Google
+    </button>
+    <script>
+      const gdriveAppDataApi = "https://www.googleapis.com/auth/drive.appdata";
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id:
+          "79951541504-********************************.apps.googleusercontent.com",
+        scope: gdriveAppDataApi,
+        callback: (response) => {
+          if (
+            response &&
+            response.access_token &&
+            google.accounts.oauth2.hasGrantedAnyScope(
+              response,
+              gdriveAppDataApi
+            )
+          ) {
+            // Look at AppData
+            var xhr = new XMLHttpRequest();
+            xhr.onload = () => {
+              console.log(xhr.response);
+            };
+
+            xhr.open("GET", gdriveAppDataApi);
+            xhr.setRequestHeader(
+              "Authorization",
+              "Bearer " + response.access_token
+            );
+            xhr.send();
+          }
+        },
+      });
+      function init() {
+        document.getElementById("google-signin-btn").onclick = function () {
+          client.requestAccessToken();
+        };
+      }
+      window.onload = init;
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
