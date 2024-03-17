@@ -3,7 +3,7 @@ import "./styles.css";
 import { TodoList } from "./components/TodoList";
 import { TodoListsContext } from "./contexts/Todo";
 import { GUID, TTodoList } from "./types";
-import { CssVarsProvider } from "@mui/joy";
+import { Button, CssVarsProvider } from "@mui/joy";
 import { ThemeToggle } from "./components/ThemeToggle";
 
 export default function App() {
@@ -52,9 +52,7 @@ export default function App() {
         {/* <CurrentStateContext.Provider value={{ currentState, setCurrentState }}> */}
         <TodoListsContext.Provider value={{ todoLists, setTodoLists }}>
           <h1 className="header">Todo List</h1>
-          <button className="btn" onClick={addList}>
-            Add List
-          </button>
+          <Button onClick={addList}>Add List</Button>
           {/* <p>Selected list: {currentState.selectedTodoList?.id.toString()}</p> */}
           {/* {currentState.selectedTodoList && <NewTodoForm />} */}
           <div>
