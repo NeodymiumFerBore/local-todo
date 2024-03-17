@@ -3,15 +3,25 @@ import { IconButton } from "@mui/joy";
 import { LightbulbOutlined, LightbulbRounded } from "@mui/icons-material";
 
 export function ThemeToggle() {
-  const { mode, setMode } = useColorScheme();
+  const { mode, systemMode, setMode } = useColorScheme();
+
+  function effectiveMode() {
+    if (mode === "dark" || (mode === "system" && systemMode === "dark"))
+      return "dark";
+    else return "light";
+  }
 
   return (
     <IconButton
       variant="solid"
       color="neutral"
-      onClick={() => setMode(mode === "dark" ? "light" : "dark")}
+      onClick={() => setMode(effectiveMode() === "dark" ? "light" : "dark")}
     >
-      {mode === "dark" ? <LightbulbRounded /> : <LightbulbOutlined />}
+      {effectiveMode() === "dark" ? (
+        <LightbulbRounded />
+      ) : (
+        <LightbulbOutlined />
+      )}
     </IconButton>
   );
 }
