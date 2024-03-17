@@ -14,14 +14,14 @@ describe("GUID class", () => {
 
 describe("GUID class", () => {
   it("should accept a valid GUID string", () => {
-    let guid = new GUID("b00f19ed-11ff-4d1b-9282-e1438fb8d2cb");
-    expect(guid.toString()).toEqual("b00f19ed-11ff-4d1b-9282-e1438fb8d2cb");
+    const t = "b00f19ed-11ff-4d1b-9282-e1438fb8d2cb";
+    expect(new GUID(t).toString()).toEqual(t);
   });
 });
 
 describe("GUID class", () => {
   it("should refuse an invalid GUID string", () => {
-    let failureCases = [
+    const failureCases = [
       "b00f19ed-11ff-4d1b9282-e1438fb8d2cb", // Missing -
       "b00f19ed-11ff-4d1b-9282-g1438fb8d2cb", // Letter g not hexa
       "b00f19ed-11ff-4d1b-9282-e1438fb8d2cba", // Too long
