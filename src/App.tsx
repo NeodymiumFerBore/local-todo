@@ -5,6 +5,9 @@ import { TodoListsContext } from "./contexts/Todo";
 import { GUID, TTodoList } from "./types";
 import { Button, CssVarsProvider } from "@mui/joy";
 import { ThemeToggle } from "./components/ThemeToggle";
+import { GoogleGsiImplicitFlowUseEffect } from "./components/GoogleGsiImplicitFlowUseEffect";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleOAuthImplicitFlow } from "./components/GoogleOAuthImplicitFlow";
 
 export default function App() {
   // const [todos, setTodos] = useState(() => {
@@ -36,9 +39,13 @@ export default function App() {
 
   return (
     <>
+      {/* REQUIRED TO USE @react-oauth/google (wrap app in this provider) */}
+      {/* <GoogleOAuthProvider clientId="79951541504-********************************.apps.googleusercontent.com"> */}
       <CssVarsProvider defaultMode="system">
         <ThemeToggle />
         <TodoListsContext.Provider value={{ todoLists, setTodoLists }}>
+          <GoogleGsiImplicitFlowUseEffect />
+          {/* <GoogleOAuthImplicitFlow /> */}
           <h1 className="header">Todo List</h1>
           <Button onClick={addList}>Add List</Button>
           <div>
@@ -49,6 +56,7 @@ export default function App() {
           </div>
         </TodoListsContext.Provider>
       </CssVarsProvider>
+      {/* </GoogleOAuthProvider> */}
     </>
   );
 }
