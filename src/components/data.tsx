@@ -2,16 +2,11 @@ import { colors } from "@mui/joy";
 import { purple } from "@mui/material/colors";
 import seedrandom from "seedrandom";
 import type { Author, Quote, QuoteMap } from "../types";
-import finnImg from "../static/media/finn-min.png";
-import bmoImg from "../static/media/bmo-min.png";
-import princessImg from "../static/media/princess-min.png";
-import jakeImg from "../static/media/jake-min.png";
 
 const jake: Author = {
   id: "1",
   name: "Jake",
   url: "http://adventuretime.wikia.com/wiki/Jake",
-  avatarUrl: jakeImg,
   colors: {
     soft: colors.yellow[50],
     hard: colors.yellow[800],
@@ -22,7 +17,6 @@ const BMO: Author = {
   id: "2",
   name: "BMO",
   url: "http://adventuretime.wikia.com/wiki/BMO",
-  avatarUrl: bmoImg,
   colors: {
     soft: colors.green[50],
     hard: colors.green[800],
@@ -33,7 +27,6 @@ const finn: Author = {
   id: "3",
   name: "Finn",
   url: "http://adventuretime.wikia.com/wiki/Finn",
-  avatarUrl: finnImg,
   colors: {
     soft: colors.blue[50],
     hard: colors.blue[800],
@@ -44,7 +37,6 @@ const princess: Author = {
   id: "4",
   name: "Princess bubblegum",
   url: "http://adventuretime.wikia.com/wiki/Princess_Bubblegum",
-  avatarUrl: princessImg,
   colors: {
     soft: purple[50],
     hard: purple[800],
