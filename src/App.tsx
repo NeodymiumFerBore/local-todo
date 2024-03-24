@@ -1,24 +1,12 @@
 import { useState } from "react";
-import "./styles.css";
-import { TodoList } from "./components/TodoList";
 import { TodoListsContext } from "./contexts/Todo";
 import { GUID, TTodoList } from "./types";
-import {
-  Box,
-  Button,
-  CssVarsProvider,
-  IconButton,
-  Stack,
-  Typography,
-} from "@mui/joy";
+import { CssVarsProvider, IconButton, Stack, Typography } from "@mui/joy";
 import { ThemeToggle } from "./components/ThemeToggle";
-import { DragDropContext, DropResult } from "@hello-pangea/dnd";
-import DroppableList from "./components/DroppableList";
-import Board from "@/components/MyBoard";
-import { authorQuoteMap, generateQuoteMap } from "./components/data";
-import { QuoteItem } from "./primatives/quote-item";
 import { DeveloperBoard } from "@mui/icons-material";
-import { env } from "process";
+import { generateQuoteMap } from "./components/data";
+import Board from "@/components/MyBoard";
+import "./styles.css";
 
 export default function App() {
   // const [todos, setTodos] = useState(() => {
@@ -28,9 +16,6 @@ export default function App() {
   //   return JSON.parse(localValue);
   // });
   const [developerMode, setDeveloperMode] = useState(false);
-
-  // const [quotes, setQuotes] = useState(generateQuoteMap(500));
-
   const [todoLists, setTodoLists] = useState<TTodoList[]>(
     [
       {
@@ -130,26 +115,11 @@ export default function App() {
     });
   }
 
-  const [lists, setLists] = useState([
-    {
-      title: "List 1",
-      todos: [
-        { id: "task-1", content: "Task 1" },
-        { id: "task-2", content: "Task 2" },
-        // More tasks...
-      ],
-    },
-  ]);
-  const handleDragEnd = (result: DropResult): void => {
-    // TODO: Update the tasks state based on the result
-    console.log("handle drag: ", result);
-  };
   return (
     <>
       {/* <CssVarsProvider defaultMode="system"> */}
       <TodoListsContext.Provider value={{ todoLists, setTodoLists }}>
-        <CssVarsProvider defaultMode="light">
-          {/* <Board initial={authorQuoteMap}></Board> */}
+        <CssVarsProvider defaultMode="system">
           {/* Navigation and option top menu */}
           <Stack direction={"row"} justifyContent={"right"} spacing={1}>
             {process.env.NODE_ENV === "development" && (
