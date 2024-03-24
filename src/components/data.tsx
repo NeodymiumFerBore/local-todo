@@ -1,4 +1,3 @@
-import seedrandom from "seedrandom";
 import { GUID } from "../types";
 import type { Todo, TodoItemMap, TTodoList } from "../types";
 
@@ -93,40 +92,21 @@ export const todos: Todo[] = [
   },
 ];
 
-// So we do not have any clashes with our hardcoded ones
-let idCount: number;
-let predictableMathRandom: seedrandom.PRNG;
-
-export const resetData = (seed: string) => {
-  idCount = 1;
-  predictableMathRandom = seedrandom(seed);
-};
-
-resetData("base");
-
-export const getTodos = (count: number = todos.length): Todo[] =>
-  // eslint-disable-next-line no-restricted-syntax
-  Array.from({ length: count }, (_, k) => k).map(() => {
-    const random: Todo =
-      todos[Math.floor(predictableMathRandom() * todos.length)];
-
-    const custom: Todo = {
-      ...random,
-      id: crypto.randomUUID(),
-      // id: `G${idCount++}`,
-    };
-
-    return custom;
+function getTodos(listId: string): Todo[] {
+  return todos.filter((e) => {
+    return e.todoList === listId;
   });
+}
 
-export const generateTodoItemMap = (todoCount: number): TodoItemMap =>
-  todoLists.reduce(
+export function generateTodoItemMap(): TodoItemMap {
+  return todoLists.reduce(
     (previous: TodoItemMap, todoList: TTodoList) => ({
       ...previous,
-      [todoList.id]: getTodos(todoCount / todoLists.length),
+      [todoList.id]: getTodos(todoList.id),
     }),
     {}
   );
+}
 
 /****************************************************/
 
