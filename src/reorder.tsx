@@ -26,22 +26,22 @@ function reorder<TItem>(
 export default reorder;
 
 interface ReorderTodoItemMapArgs {
-  quoteMap: TodoItemMap;
+  todoItemMap: TodoItemMap;
   source: DraggableLocation;
   destination: DraggableLocation;
 }
 
 export interface ReorderTodoItemMapResult {
-  quoteMap: TodoItemMap;
+  todoItemMap: TodoItemMap;
 }
 
 export const reorderTodoItemMap = ({
-  quoteMap,
+  todoItemMap,
   source,
   destination,
 }: ReorderTodoItemMapArgs): ReorderTodoItemMapResult => {
-  const current: Quote[] = [...quoteMap[source.droppableId]];
-  const next: Quote[] = [...quoteMap[destination.droppableId]];
+  const current: Quote[] = [...todoItemMap[source.droppableId]];
+  const next: Quote[] = [...todoItemMap[destination.droppableId]];
   const target: Quote = current[source.index];
 
   // moving to same list
@@ -52,11 +52,11 @@ export const reorderTodoItemMap = ({
       destination.index
     );
     const result: TodoItemMap = {
-      ...quoteMap,
+      ...todoItemMap,
       [source.droppableId]: reordered,
     };
     return {
-      quoteMap: result,
+      todoItemMap: result,
     };
   }
 
@@ -68,12 +68,12 @@ export const reorderTodoItemMap = ({
   next.splice(destination.index, 0, target);
 
   const result: TodoItemMap = {
-    ...quoteMap,
+    ...todoItemMap,
     [source.droppableId]: current,
     [destination.droppableId]: next,
   };
 
   return {
-    quoteMap: result,
+    todoItemMap: result,
   };
 };

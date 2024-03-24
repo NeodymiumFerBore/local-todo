@@ -74,12 +74,12 @@ export default function Board(props: Props) {
 
     // reordering quotes
     const data = reorderTodoItemMap({
-      quoteMap: quotes,
+      todoItemMap: quotes,
       source,
       destination,
     });
 
-    setQuotes(data.quoteMap);
+    setQuotes(data.todoItemMap);
   }
 
   return (
