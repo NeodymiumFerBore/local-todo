@@ -1,5 +1,5 @@
 import type { DraggableLocation } from "@hello-pangea/dnd";
-import type { Quote, TodoItemMap } from "./types";
+import type { Todo, TodoItemMap } from "./types";
 
 // a little function to help us with reordering the result
 /**
@@ -40,17 +40,13 @@ export const reorderTodoItemMap = ({
   source,
   destination,
 }: ReorderTodoItemMapArgs): ReorderTodoItemMapResult => {
-  const current: Quote[] = [...todoItemMap[source.droppableId]];
-  const next: Quote[] = [...todoItemMap[destination.droppableId]];
-  const target: Quote = current[source.index];
+  const current: Todo[] = [...todoItemMap[source.droppableId]];
+  const next: Todo[] = [...todoItemMap[destination.droppableId]];
+  const target: Todo = current[source.index];
 
   // moving to same list
   if (source.droppableId === destination.droppableId) {
-    const reordered: Quote[] = reorder(
-      current,
-      source.index,
-      destination.index
-    );
+    const reordered: Todo[] = reorder(current, source.index, destination.index);
     const result: TodoItemMap = {
       ...todoItemMap,
       [source.droppableId]: reordered,
