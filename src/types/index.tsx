@@ -45,7 +45,7 @@ export interface TTodoList {
 export interface Quote {
   id: Id;
   content: string;
-  author: Id;
+  todoList: Id;
 }
 
 export interface Dragging {
