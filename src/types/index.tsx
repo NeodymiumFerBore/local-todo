@@ -1,6 +1,6 @@
 // https://stackoverflow.com/a/37144720
 export class GUID {
-  private readonly str: string;
+  public readonly str: string;
   static readonly validPattern: RegExp =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
@@ -13,10 +13,6 @@ export class GUID {
     }
   }
 
-  toString() {
-    return this.str;
-  }
-
   public static validate(guid: string): boolean {
     return GUID.validPattern.test(guid);
   }
@@ -24,8 +20,8 @@ export class GUID {
 
 export type TTodoItem = {
   id: GUID;
-  title: string;
-  description: string;
+  listId: GUID;
+  content: string;
   done: boolean;
 };
 
@@ -33,23 +29,17 @@ export type TTodoList = {
   id: GUID;
   title: string;
   description: string;
-  items: TTodoItem[];
 };
 
 import type { DraggableId, DraggableLocation } from "@hello-pangea/dnd";
 
 export type Id = string;
 
-export interface AuthorColors {
-  soft: string;
-  hard: string;
-}
-
 export interface Author {
-  id: Id;
+  // id: GUID;
+  id: string;
   name: string;
-  url: string;
-  colors: AuthorColors;
+  description: string;
 }
 
 export interface Quote {
@@ -65,9 +55,4 @@ export interface Dragging {
 
 export interface QuoteMap {
   [key: string]: Quote[];
-}
-
-export interface Task {
-  id: Id;
-  content: string;
 }
