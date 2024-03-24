@@ -6,7 +6,7 @@ import type {
   DraggableProvided,
   DraggableStateSnapshot,
 } from "@hello-pangea/dnd";
-import QuoteItem from "./my-quote-item";
+import TodoItem from "./my-quote-item";
 import type { Todo } from "../types";
 import { Box, List, Typography } from "@mui/joy";
 
@@ -39,7 +39,7 @@ function InnerTodoList(props: TodoListProps): ReactElement {
               dragProvided: DraggableProvided,
               dragSnapshot: DraggableStateSnapshot
             ) => (
-              <QuoteItem
+              <TodoItem
                 key={quote.id}
                 quote={quote}
                 isDragging={dragSnapshot.isDragging}
@@ -104,7 +104,7 @@ export default function TodoList(props: Props): ReactElement {
       renderClone={
         useClone
           ? (provided, snapshot, descriptor) => (
-              <QuoteItem
+              <TodoItem
                 quote={quotes[descriptor.source.index]}
                 provided={provided}
                 isDragging={snapshot.isDragging}

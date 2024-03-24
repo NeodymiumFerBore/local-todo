@@ -17,7 +17,7 @@ interface Props {
   isGroupedOver?: boolean;
 }
 
-export function QuoteItem(props: Props) {
+export function TodoItem(props: Props) {
   const { quote, isDragging, isGroupedOver, provided } = props;
 
   return (
@@ -49,4 +49,4 @@ export function QuoteItem(props: Props) {
   );
 }
 
-export default React.memo<Props>(QuoteItem);
+export default React.memo<Props>(TodoItem);
