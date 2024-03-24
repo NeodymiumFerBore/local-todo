@@ -35,16 +35,6 @@ export default function Column(props: Props) {
   function addTodoItem(e: React.FormEvent) {
     e.preventDefault();
     console.log("Adding new todo: ", itemRef.current?.value);
-    // console.log("Rendering list ", thisTodoList.title);
-
-    // setTodoLists(
-    //   listsWithUpdatedItem(todoLists, thisTodoList.id, {
-    //     id: new GUID(),
-    //     title: itemRef.current?.value || "",
-    //     description: "",
-    //     done: false,
-    //   })
-    // );
   }
 
   return (
