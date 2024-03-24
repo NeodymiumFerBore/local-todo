@@ -108,6 +108,22 @@ export function generateTodoItemMap(): TodoItemMap {
   );
 }
 
+export function generateTodoItemMapBunch(count: number): TodoItemMap {
+  let map = generateTodoItemMap();
+  for (let i = 1; i < count; i++) {
+    const tmpMap = generateTodoItemMap();
+    Object.keys(tmpMap).forEach((k) => {
+      map[k] = [
+        ...map[k],
+        ...tmpMap[k].map((e) => {
+          return { ...e, id: crypto.randomUUID() };
+        }),
+      ];
+    });
+  }
+  return map;
+}
+
 /****************************************************/
 
 export function generateTodoList(
