@@ -50,4 +50,3 @@ export function QuoteItem(props: Props) {
 }
 
 export default React.memo<Props>(QuoteItem);
-// export default QuoteItem;

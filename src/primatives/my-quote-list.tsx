@@ -1,6 +1,4 @@
 import React, { CSSProperties, ReactElement } from "react";
-import styled from "@emotion/styled";
-import { colors } from "@mui/material";
 import { Droppable, Draggable } from "@hello-pangea/dnd";
 import type {
   DroppableProvided,
@@ -9,64 +7,8 @@ import type {
   DraggableStateSnapshot,
 } from "@hello-pangea/dnd";
 import QuoteItem from "./my-quote-item";
-import { grid } from "../constants";
-import Title from "./my-title";
 import type { Quote } from "../types";
-import { List, ListDivider } from "@mui/joy";
-
-export const getBackgroundColor = (
-  isDraggingOver: boolean,
-  isDraggingFrom: boolean
-): string => {
-  if (isDraggingOver) {
-    return colors.red[50];
-  }
-  if (isDraggingFrom) {
-    return colors.teal[50];
-  }
-  return colors.amber[600];
-};
-
-interface WrapperProps {
-  isDraggingOver: boolean;
-  isDraggingFrom: boolean;
-  isDropDisabled: boolean;
-}
-
-const Wrapper = styled.div<WrapperProps>`
-  background-color: ${(props) =>
-    getBackgroundColor(props.isDraggingOver, props.isDraggingFrom)};
-  display: flex;
-  flex-direction: column;
-  opacity: ${({ isDropDisabled }) => (isDropDisabled ? 0.5 : "inherit")};
-  padding: ${grid}px;
-  border: ${grid}px;
-  padding-bottom: 0;
-  transition: background-color 0.2s ease, opacity 0.1s ease;
-  user-select: none;
-  width: 250px;
-`;
-
-const scrollContainerHeight = 250;
-
-const DropZone = styled.div`
-  /* stop the list collapsing when empty */
-  min-height: ${scrollContainerHeight}px;
-
-  /*
-    not relying on the items for a margin-bottom
-    as it will collapse when the list is empty
-  */
-  padding-bottom: ${grid}px;
-`;
-
-const ScrollContainer = styled.div`
-  overflow-x: hidden;
-  overflow-y: auto;
-  max-height: ${scrollContainerHeight}px;
-`;
-
-const Container = styled.div``;
+import { Box, List, Typography } from "@mui/joy";
 
 interface Props {
   listId?: string;
@@ -122,29 +64,31 @@ interface InnerListProps {
 
 function InnerList(props: InnerListProps) {
   const { quotes, dropProvided } = props;
-  const title = props.title ? <Title>{props.title}</Title> : null;
+  const title = props.title ? (
+    <Typography level="title-md">{props.title}</Typography>
+  ) : null;
 
   return (
-    <Container>
+    <Box>
       {title}
-      <DropZone ref={dropProvided.innerRef}>
+      <Box
+        sx={{ margin: 0, padding: 0, border: 0 }}
+        ref={dropProvided.innerRef}
+      >
         <InnerQuoteListMemo quotes={quotes} />
         {dropProvided.placeholder}
-      </DropZone>
-    </Container>
+      </Box>
+    </Box>
   );
 }
 
 export default function QuoteList(props: Props): ReactElement {
   const {
     ignoreContainerClipping,
-    internalScroll,
-    scrollContainerStyle,
     isDropDisabled,
     isCombineEnabled,
     listId = "LIST",
     listType,
-    style,
     quotes,
     title,
     useClone,
@@ -173,31 +117,7 @@ export default function QuoteList(props: Props): ReactElement {
         dropProvided: DroppableProvided,
         dropSnapshot: DroppableStateSnapshot
       ) => (
-        // <Wrapper
-        //   style={style}
-        //   isDraggingOver={dropSnapshot.isDraggingOver}
-        //   isDropDisabled={Boolean(isDropDisabled)}
-        //   isDraggingFrom={Boolean(dropSnapshot.draggingFromThisWith)}
-        //   {...dropProvided.droppableProps}
-        // >
-        <>
-          {/* {internalScroll ? (
-            <ScrollContainer style={scrollContainerStyle}>
-              <InnerList
-                quotes={quotes}
-                title={title}
-                dropProvided={dropProvided}
-              />
-            </ScrollContainer>
-          ) : ( */}
-          <InnerList
-            quotes={quotes}
-            title={title}
-            dropProvided={dropProvided}
-          />
-          {/* )} */}
-        </>
-        // </Wrapper>
+        <InnerList quotes={quotes} title={title} dropProvided={dropProvided} />
       )}
     </Droppable>
   );
