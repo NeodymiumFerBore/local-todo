@@ -29,7 +29,7 @@ export default function App() {
   // });
   const [developerMode, setDeveloperMode] = useState(false);
 
-  const [quotes, setQuotes] = useState(generateQuoteMap(500));
+  // const [quotes, setQuotes] = useState(generateQuoteMap(500));
 
   const [todoLists, setTodoLists] = useState<TTodoList[]>(
     [
@@ -166,7 +166,7 @@ export default function App() {
           {/* Board */}
           <Stack alignItems={"center"}>
             <Typography level="h1">Todo List</Typography>
-            <Board quotes={quotes} setQuotes={setQuotes}></Board>
+            <Board initial={generateQuoteMap(500)}></Board>
           </Stack>
           {/*
           <Button onClick={addList}>Add List</Button>

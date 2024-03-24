@@ -1,5 +1,4 @@
-import { Component, ReactElement, useState } from "react";
-
+import { Component, ReactElement, useEffect, useMemo, useState } from "react";
 import type {
   DropResult,
   DraggableLocation,
@@ -10,11 +9,11 @@ import type { QuoteMap, Quote } from "../types";
 import Column from "./MyColumn";
 import reorder, { reorderQuoteMap } from "../reorder";
 import { PartialAutoScrollerOptions } from "@hello-pangea/dnd/src/state/auto-scroller/fluid-scroller/auto-scroller-options-types";
-import { Stack } from "@mui/joy";
+import { Button, Stack } from "@mui/joy";
 
 interface Props {
-  quotes: QuoteMap;
-  setQuotes: (quotes: QuoteMap) => void;
+  initial: QuoteMap;
+  onChange?: (quotes: QuoteMap) => void;
   withScrollableColumns?: boolean;
   isCombineEnabled?: boolean;
   containerHeight?: string;
@@ -34,7 +33,8 @@ export default function Board(props: Props) {
   //   columns: this.props.initial,
   //   ordered: Object.keys(this.props.initial),
   // };
-  const [ordered, setOrdered] = useState(Object.keys(props.quotes));
+  const [quotes, setQuotes] = useState(props.initial);
+  const [ordered, setOrdered] = useState(Object.keys(props.initial));
 
   function onDragEnd(result: DropResult): void {
     if (result.combine) {
@@ -45,14 +45,14 @@ export default function Board(props: Props) {
         return;
       }
 
-      const column: Quote[] = props.quotes[result.source.droppableId];
+      const column: Quote[] = quotes[result.source.droppableId];
       const withQuoteRemoved: Quote[] = [...column];
       withQuoteRemoved.splice(result.source.index, 1);
       const columns: QuoteMap = {
-        ...props.quotes,
+        ...quotes,
         [result.source.droppableId]: withQuoteRemoved,
       };
-      props.setQuotes(columns);
+      setQuotes(columns);
       return;
     }
 
@@ -85,12 +85,12 @@ export default function Board(props: Props) {
 
     // reordering quotes
     const data = reorderQuoteMap({
-      quoteMap: props.quotes,
+      quoteMap: quotes,
       source,
       destination,
     });
 
-    props.setQuotes(data.quoteMap);
+    setQuotes(data.quoteMap);
   }
 
   // render(): ReactElement {
@@ -129,7 +129,7 @@ export default function Board(props: Props) {
                 key={key}
                 index={index}
                 title={key}
-                quotes={props.quotes[key]}
+                quotes={quotes[key]}
                 isScrollable={props.withScrollableColumns}
                 isCombineEnabled={props.isCombineEnabled}
                 useClone={props.useClone}
