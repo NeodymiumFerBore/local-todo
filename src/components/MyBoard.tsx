@@ -1,4 +1,4 @@
-import { Component, ReactElement } from "react";
+import { Component, ReactElement, useState } from "react";
 
 import type {
   DropResult,
@@ -13,7 +13,8 @@ import { PartialAutoScrollerOptions } from "@hello-pangea/dnd/src/state/auto-scr
 import { Stack } from "@mui/joy";
 
 interface Props {
-  initial: QuoteMap;
+  quotes: QuoteMap;
+  setQuotes: (quotes: QuoteMap) => void;
   withScrollableColumns?: boolean;
   isCombineEnabled?: boolean;
   containerHeight?: string;
@@ -26,35 +27,32 @@ interface State {
   ordered: string[];
 }
 
-export default class Board extends Component<Props, State> {
+export default function Board(props: Props) {
   /* eslint-disable react/sort-comp */
-  static defaultProps = {
-    isCombineEnabled: false,
-    applyGlobalStyles: false,
-  };
 
-  state: State = {
-    columns: this.props.initial,
-    ordered: Object.keys(this.props.initial),
-  };
+  // state: State = {
+  //   columns: this.props.initial,
+  //   ordered: Object.keys(this.props.initial),
+  // };
+  const [ordered, setOrdered] = useState(Object.keys(props.quotes));
 
-  onDragEnd = (result: DropResult): void => {
+  function onDragEnd(result: DropResult): void {
     if (result.combine) {
       if (result.type === "COLUMN") {
-        const shallow: string[] = [...this.state.ordered];
+        const shallow: string[] = [...ordered];
         shallow.splice(result.source.index, 1);
-        this.setState({ ordered: shallow });
+        setOrdered(shallow);
         return;
       }
 
-      const column: Quote[] = this.state.columns[result.source.droppableId];
+      const column: Quote[] = props.quotes[result.source.droppableId];
       const withQuoteRemoved: Quote[] = [...column];
       withQuoteRemoved.splice(result.source.index, 1);
       const columns: QuoteMap = {
-        ...this.state.columns,
+        ...props.quotes,
         [result.source.droppableId]: withQuoteRemoved,
       };
-      this.setState({ columns });
+      props.setQuotes(columns);
       return;
     }
 
@@ -76,47 +74,47 @@ export default class Board extends Component<Props, State> {
 
     // reordering column
     if (result.type === "COLUMN") {
-      const ordered: string[] = reorder(
-        this.state.ordered,
+      const reordered: string[] = reorder(
+        ordered,
         source.index,
         destination.index
       );
-
-      this.setState({
-        ordered,
-      });
-
+      setOrdered(reordered);
       return;
     }
 
+    // reordering quotes
     const data = reorderQuoteMap({
-      quoteMap: this.state.columns,
+      quoteMap: props.quotes,
       source,
       destination,
     });
 
-    this.setState({
-      columns: data.quoteMap,
-    });
-  };
+    props.setQuotes(data.quoteMap);
+  }
 
-  render(): ReactElement {
-    const columns: QuoteMap = this.state.columns;
-    const ordered: string[] = this.state.ordered;
-    const {
-      containerHeight,
-      useClone,
-      isCombineEnabled,
-      withScrollableColumns,
-    } = this.props;
+  // render(): ReactElement {
+  //   const columns: QuoteMap = this.state.columns;
+  //   const ordered: string[] = this.state.ordered;
+  //   const {
+  //     containerHeight,
+  //     useClone,
+  //     isCombineEnabled,
+  //     withScrollableColumns,
+  //   } = this.props;
 
-    const board = (
+  return (
+    // const board = (
+    <DragDropContext
+      onDragEnd={onDragEnd}
+      autoScrollerOptions={props.autoScrollerOptions}
+    >
       <Droppable
         droppableId="board"
         type="COLUMN"
         direction="horizontal"
-        ignoreContainerClipping={Boolean(containerHeight)}
-        isCombineEnabled={isCombineEnabled}
+        ignoreContainerClipping={Boolean(props.containerHeight)}
+        isCombineEnabled={props.isCombineEnabled}
       >
         {(provided: DroppableProvided) => (
           <Stack
@@ -131,27 +129,28 @@ export default class Board extends Component<Props, State> {
                 key={key}
                 index={index}
                 title={key}
-                quotes={columns[key]}
-                isScrollable={withScrollableColumns}
-                isCombineEnabled={isCombineEnabled}
-                useClone={useClone}
+                quotes={props.quotes[key]}
+                isScrollable={props.withScrollableColumns}
+                isCombineEnabled={props.isCombineEnabled}
+                useClone={props.useClone}
               />
             ))}
             {provided.placeholder}
           </Stack>
         )}
       </Droppable>
-    );
+    </DragDropContext>
+  );
 
-    return (
-      <>
-        <DragDropContext
-          onDragEnd={this.onDragEnd}
-          autoScrollerOptions={this.props.autoScrollerOptions}
-        >
-          {board}
-        </DragDropContext>
-      </>
-    );
-  }
+  // return (
+  //   <>
+  //     <DragDropContext
+  //       onDragEnd={this.onDragEnd}
+  //       autoScrollerOptions={this.props.autoScrollerOptions}
+  //     >
+  //       {board}
+  //     </DragDropContext>
+  //   </>
+  // );
+  // }
 }

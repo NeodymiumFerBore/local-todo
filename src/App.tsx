@@ -166,7 +166,7 @@ export default function App() {
           {/* Board */}
           <Stack alignItems={"center"}>
             <Typography level="h1">Todo List</Typography>
-            <Board initial={quotes}></Board>
+            <Board quotes={quotes} setQuotes={setQuotes}></Board>
           </Stack>
           {/*
           <Button onClick={addList}>Add List</Button>
