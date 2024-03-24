@@ -73,7 +73,7 @@ export default function Column(props: Props) {
             </form>
             <TodoList
               listId={title}
-              listType="QUOTE"
+              listType="TODO"
               style={{
                 backgroundColor: snapshot.isDragging ? "#bbbbbb" : "#eeeeee",
               }}
