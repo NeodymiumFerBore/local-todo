@@ -1,4 +1,4 @@
-import { Component, ReactElement, useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import type {
   DropResult,
   DraggableLocation,
@@ -9,7 +9,7 @@ import type { QuoteMap, Quote } from "../types";
 import Column from "./MyColumn";
 import reorder, { reorderQuoteMap } from "../reorder";
 import { PartialAutoScrollerOptions } from "@hello-pangea/dnd/src/state/auto-scroller/fluid-scroller/auto-scroller-options-types";
-import { Button, Stack } from "@mui/joy";
+import { Stack } from "@mui/joy";
 
 interface Props {
   initial: QuoteMap;
@@ -21,18 +21,7 @@ interface Props {
   autoScrollerOptions?: PartialAutoScrollerOptions;
 }
 
-interface State {
-  columns: QuoteMap;
-  ordered: string[];
-}
-
 export default function Board(props: Props) {
-  /* eslint-disable react/sort-comp */
-
-  // state: State = {
-  //   columns: this.props.initial,
-  //   ordered: Object.keys(this.props.initial),
-  // };
   const [quotes, setQuotes] = useState(props.initial);
   const [ordered, setOrdered] = useState(Object.keys(props.initial));
 
@@ -93,16 +82,6 @@ export default function Board(props: Props) {
     setQuotes(data.quoteMap);
   }
 
-  // render(): ReactElement {
-  //   const columns: QuoteMap = this.state.columns;
-  //   const ordered: string[] = this.state.ordered;
-  //   const {
-  //     containerHeight,
-  //     useClone,
-  //     isCombineEnabled,
-  //     withScrollableColumns,
-  //   } = this.props;
-
   return (
     // const board = (
     <DragDropContext
@@ -141,16 +120,4 @@ export default function Board(props: Props) {
       </Droppable>
     </DragDropContext>
   );
-
-  // return (
-  //   <>
-  //     <DragDropContext
-  //       onDragEnd={this.onDragEnd}
-  //       autoScrollerOptions={this.props.autoScrollerOptions}
-  //     >
-  //       {board}
-  //     </DragDropContext>
-  //   </>
-  // );
-  // }
 }
