@@ -135,17 +135,6 @@ export const getQuotes = (count: number = quotes.length): Quote[] =>
     return custom;
   });
 
-const getByAuthor = (author: Author, items: Quote[]): Quote[] =>
-  items.filter((quote: Quote) => quote.author === author);
-
-export const authorQuoteMap: QuoteMap = authors.reduce(
-  (previous: QuoteMap, author: Author) => ({
-    ...previous,
-    [author.name]: getByAuthor(author, quotes),
-  }),
-  {}
-);
-
 export const generateQuoteMap = (quoteCount: number): QuoteMap =>
   authors.reduce(
     (previous: QuoteMap, author: Author) => ({
