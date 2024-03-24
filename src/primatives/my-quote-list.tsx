@@ -7,13 +7,13 @@ import type {
   DraggableStateSnapshot,
 } from "@hello-pangea/dnd";
 import QuoteItem from "./my-quote-item";
-import type { Quote } from "../types";
+import type { Todo } from "../types";
 import { Box, List, Typography } from "@mui/joy";
 
 interface Props {
   listId?: string;
   listType?: string;
-  quotes: Quote[];
+  quotes: Todo[];
   title?: string;
   internalScroll?: boolean;
   scrollContainerStyle?: CSSProperties;
@@ -26,14 +26,14 @@ interface Props {
 }
 
 interface QuoteListProps {
-  quotes: Quote[];
+  quotes: Todo[];
 }
 
 function InnerQuoteList(props: QuoteListProps): ReactElement {
   return (
     <>
       <List>
-        {props.quotes.map((quote: Quote, index: number) => (
+        {props.quotes.map((quote: Todo, index: number) => (
           <Draggable key={quote.id} draggableId={quote.id} index={index}>
             {(
               dragProvided: DraggableProvided,
@@ -58,7 +58,7 @@ const InnerQuoteListMemo = React.memo<QuoteListProps>(InnerQuoteList);
 
 interface InnerListProps {
   dropProvided: DroppableProvided;
-  quotes: Quote[];
+  quotes: Todo[];
   title: string | undefined | null;
 }
 

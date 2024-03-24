@@ -1,6 +1,6 @@
 import React from "react";
 import type { DraggableProvided } from "@hello-pangea/dnd";
-import type { Quote } from "../types";
+import type { Todo } from "../types";
 import {
   Checkbox,
   IconButton,
@@ -11,7 +11,7 @@ import {
 import { Delete } from "@mui/icons-material";
 
 interface Props {
-  quote: Quote;
+  quote: Todo;
   isDragging: boolean;
   provided: DraggableProvided;
   isGroupedOver?: boolean;

@@ -20,12 +20,12 @@ export class GUID {
   }
 }
 
-export type TTodoItem = {
-  id: GUID;
-  listId: GUID;
-  content: string;
-  done: boolean;
-};
+// export type TTodoItem = {
+//   id: GUID;
+//   listId: GUID;
+//   content: string;
+//   done: boolean;
+// };
 
 // export type TTodoList = {
 //   id: GUID;
@@ -42,7 +42,7 @@ export interface TTodoList {
   description: string;
 }
 
-export interface Quote {
+export interface Todo {
   id: Id;
   content: string;
   todoList: Id;
@@ -54,5 +54,5 @@ export interface Dragging {
 }
 
 export interface TodoItemMap {
-  [key: string]: Quote[];
+  [key: string]: Todo[];
 }

@@ -4,7 +4,7 @@ import seedrandom from "seedrandom";
 import {
   GUID,
   type TTodoList,
-  type Quote,
+  type Todo,
   type TodoItemMap,
   type TTodoList,
   TTodoItem,
@@ -36,7 +36,7 @@ const list4: TTodoList = {
 
 export const todoLists: TTodoList[] = [list1, list2, list3, list4];
 
-export const quotes: Quote[] = [
+export const quotes: Todo[] = [
   {
     id: "7343fe89-5119-4248-b5d3-59bcf13d0ed5",
     content: "Sometimes life is scary and dark",
@@ -112,13 +112,13 @@ export const resetData = (seed: string) => {
 
 resetData("base");
 
-export const getQuotes = (count: number = quotes.length): Quote[] =>
+export const getTodos = (count: number = quotes.length): Todo[] =>
   // eslint-disable-next-line no-restricted-syntax
   Array.from({ length: count }, (_, k) => k).map(() => {
-    const random: Quote =
+    const random: Todo =
       quotes[Math.floor(predictableMathRandom() * quotes.length)];
 
-    const custom: Quote = {
+    const custom: Todo = {
       ...random,
       id: crypto.randomUUID(),
       // id: `G${idCount++}`,
@@ -131,7 +131,7 @@ export const generateTodoItemMap = (quoteCount: number): TodoItemMap =>
   todoLists.reduce(
     (previous: TodoItemMap, todoList: TTodoList) => ({
       ...previous,
-      [todoList.id]: getQuotes(quoteCount / todoLists.length),
+      [todoList.id]: getTodos(quoteCount / todoLists.length),
     }),
     {}
   );

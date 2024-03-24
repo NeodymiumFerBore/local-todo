@@ -5,7 +5,7 @@ import type {
   DroppableProvided,
 } from "@hello-pangea/dnd";
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import type { TodoItemMap, Quote } from "../types";
+import type { TodoItemMap, Todo } from "../types";
 import Column from "./MyColumn";
 import reorder, { reorderTodoItemMap } from "../reorder";
 import { PartialAutoScrollerOptions } from "@hello-pangea/dnd/src/state/auto-scroller/fluid-scroller/auto-scroller-options-types";
@@ -22,7 +22,7 @@ interface Props {
 }
 
 export default function Board(props: Props) {
-  const [quotes, setQuotes] = useState(props.initial);
+  const [quotes, setTodos] = useState(props.initial);
   const [ordered, setOrdered] = useState(Object.keys(props.initial));
 
   function onDragEnd(result: DropResult): void {
@@ -34,14 +34,14 @@ export default function Board(props: Props) {
         return;
       }
 
-      const column: Quote[] = quotes[result.source.droppableId];
-      const withQuoteRemoved: Quote[] = [...column];
-      withQuoteRemoved.splice(result.source.index, 1);
+      const column: Todo[] = quotes[result.source.droppableId];
+      const withTodoRemoved: Todo[] = [...column];
+      withTodoRemoved.splice(result.source.index, 1);
       const columns: TodoItemMap = {
         ...quotes,
-        [result.source.droppableId]: withQuoteRemoved,
+        [result.source.droppableId]: withTodoRemoved,
       };
-      setQuotes(columns);
+      setTodos(columns);
       return;
     }
 
@@ -79,7 +79,7 @@ export default function Board(props: Props) {
       destination,
     });
 
-    setQuotes(data.todoItemMap);
+    setTodos(data.todoItemMap);
   }
 
   return (

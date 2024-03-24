@@ -4,7 +4,7 @@ import type {
   DraggableStateSnapshot,
 } from "@hello-pangea/dnd";
 import QuoteList from "../primatives/my-quote-list";
-import type { Quote } from "../types";
+import type { Todo } from "../types";
 import AddIcon from "@mui/icons-material/Add";
 
 import {
@@ -19,7 +19,7 @@ import React, { useRef } from "react";
 
 interface Props {
   title: string;
-  quotes: Quote[];
+  quotes: Todo[];
   index: number;
   isScrollable?: boolean;
   isCombineEnabled?: boolean;
@@ -28,7 +28,7 @@ interface Props {
 
 export default function Column(props: Props) {
   const title: string = props.title;
-  const quotes: Quote[] = props.quotes;
+  const quotes: Todo[] = props.quotes;
   const index: number = props.index;
   const itemRef = useRef<React.ElementRef<"input"> | undefined>();
 
