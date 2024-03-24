@@ -8,7 +8,7 @@ import type { Todo } from "../types";
 import AddIcon from "@mui/icons-material/Add";
 
 import { Box, Button, Card, CardOverflow, Input, Typography } from "@mui/joy";
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 
 interface Props {
   title: string;
@@ -29,6 +29,23 @@ export default function Column(props: Props) {
     e.preventDefault();
     console.log("Adding new todo: ", itemRef.current?.value);
   }
+
+  // const testing = useMemo(
+  //   () => (
+  //     <TodoList
+  //       listId={title}
+  //       listType="TODO"
+  //       // style={{
+  //       //   backgroundColor: snapshot.isDragging ? "#bbbbbb" : "#eeeeee",
+  //       // }}
+  //       todos={todos}
+  //       internalScroll={props.isScrollable}
+  //       isCombineEnabled={Boolean(props.isCombineEnabled)}
+  //       useClone={Boolean(props.useClone)}
+  //     />
+  //   ),
+  //   [todos]
+  // );
 
   return (
     <Draggable draggableId={title} index={index}>
@@ -81,6 +98,7 @@ export default function Column(props: Props) {
               isCombineEnabled={Boolean(props.isCombineEnabled)}
               useClone={Boolean(props.useClone)}
             />
+            {/* {testing} */}
           </Card>
         </Box>
       )}

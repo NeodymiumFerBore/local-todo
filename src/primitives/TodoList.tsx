@@ -122,3 +122,5 @@ export default function TodoList(props: Props): ReactElement {
     </Droppable>
   );
 }
+
+// export default React.memo<Props>(TodoList);

@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { TodoListsContext } from "./contexts/Todo";
-import { GUID, TTodoList } from "./types";
+import { GUID, TTodoList, Todo } from "./types";
 import { CssVarsProvider, IconButton, Stack, Typography } from "@mui/joy";
 import { ThemeToggle } from "./components/ThemeToggle";
-import { DeveloperBoard } from "@mui/icons-material";
+import { Add, DeveloperBoard } from "@mui/icons-material";
 import {
+  generateTodoItemBunch,
   generateTodoItemMap,
   generateTodoItemMapBunch,
 } from "./components/data";
-import Board from "@/components/MyBoard";
+import Board from "@/components/MyBoard2";
+import { todoLists as premadeTodoLists } from "./components/data";
+import { todos as premadeTodos } from "./components/data";
 import "./styles.css";
 
 /**
@@ -35,51 +38,64 @@ export default function App() {
   //   return JSON.parse(localValue);
   // });
   const [developerMode, setDeveloperMode] = useState(false);
-  const [todoLists, setTodoLists] = useState<TTodoList[]>([]);
+
+  const [todoLists, setTodoLists] = useState<TTodoList[]>(premadeTodoLists);
+  const [todos, setTodos] = useState<Todo[]>(generateTodoItemBunch(200));
 
   // useEffect(() => {
   //   localStorage.setItem("ITEMS", JSON.stringify(todos));
   // }, [todos]);
 
   function addList() {
-    if (todoLists.length > 0) return;
+    // if (todoLists.length > 0) return;
 
-    const newList = {
-      id: new GUID(),
-      title: `List ${todoLists.length + 1}`,
+    const newList: TTodoList = {
+      id: new GUID().str,
+      name: `List ${todoLists.length + 2}`,
       description: "",
-      items: [],
     };
     setTodoLists((currentLists) => {
       return [...currentLists, newList];
     });
   }
 
+  function addTodo(newTodo: Todo) {
+    console.log("Adding todo in App: ", newTodo);
+  }
+
   return (
     <>
       {/* <CssVarsProvider defaultMode="system"> */}
-      <TodoListsContext.Provider value={{ todoLists, setTodoLists }}>
-        <CssVarsProvider defaultMode="system">
-          {/* Navigation and option top menu */}
-          <Stack direction={"row"} justifyContent={"right"} spacing={1}>
-            {process.env.NODE_ENV === "development" && (
-              <IconButton
-                variant="solid"
-                color="neutral"
-                onClick={() => setDeveloperMode(!developerMode)}
-              >
-                <DeveloperBoard />
-              </IconButton>
-            )}
-            <ThemeToggle />
-          </Stack>
-          {/* Board */}
-          <Stack alignItems={"center"}>
-            <Typography level="h1">Todo List</Typography>
-            {/* <Board initial={generateTodoItemMap()}></Board> */}
-            <Board initial={generateTodoItemMapBunch(5)}></Board>
-          </Stack>
-          {/*
+      {/* <TodoListsContext.Provider value={{ todoLists, setTodoLists }}> */}
+      <CssVarsProvider defaultMode="system">
+        {/* Navigation and option top menu */}
+        <Stack direction={"row"} justifyContent={"right"} spacing={1}>
+          {process.env.NODE_ENV === "development" && (
+            <IconButton
+              variant="solid"
+              color="neutral"
+              onClick={() => setDeveloperMode(!developerMode)}
+            >
+              <DeveloperBoard />
+            </IconButton>
+          )}
+          <IconButton variant="solid" color="neutral" onClick={addList}>
+            <Add />
+          </IconButton>
+          <ThemeToggle />
+        </Stack>
+        {/* Board */}
+        <Stack alignItems={"center"}>
+          <Typography level="h1">Todo List</Typography>
+          {/* <Board initial={generateTodoItemMap()}></Board> */}
+          <Board
+            todos={todos}
+            onTodosChange={setTodos}
+            todoLists={todoLists}
+            onTodoListsChange={setTodoLists}
+          ></Board>
+        </Stack>
+        {/*
           <Button onClick={addList}>Add List</Button>
           <div>
             {todoLists.length === 0 && "No TodoList"}
@@ -88,8 +104,8 @@ export default function App() {
             })}
           </div>
            */}
-        </CssVarsProvider>
-      </TodoListsContext.Provider>
+      </CssVarsProvider>
+      {/* </TodoListsContext.Provider> */}
     </>
   );
 }
