@@ -2,13 +2,22 @@ import type { DraggableLocation } from "@hello-pangea/dnd";
 import type { Quote, QuoteMap } from "./types";
 
 // a little function to help us with reordering the result
+/**
+ * @param list        list to reorder
+ * @param startIndex  index of the item that was moved from
+ * @param endIndex    index where the item was move to
+ * @returns           reordered list
+ */
 function reorder<TItem>(
   list: TItem[],
   startIndex: number,
   endIndex: number
 ): TItem[] {
+  // copy original list
   const result = [...list];
+  // remove item at startIndex
   const [removed] = result.splice(startIndex, 1);
+  // insert item at endIndex
   result.splice(endIndex, 0, removed);
 
   return result;
