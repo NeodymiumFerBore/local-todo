@@ -4,7 +4,7 @@ import { GUID, TTodoList } from "./types";
 import { CssVarsProvider, IconButton, Stack, Typography } from "@mui/joy";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { DeveloperBoard } from "@mui/icons-material";
-import { generateQuoteMap } from "./components/data";
+import { generateTodoItemMap } from "./components/data";
 import Board from "@/components/MyBoard";
 import "./styles.css";
 
@@ -136,7 +136,7 @@ export default function App() {
           {/* Board */}
           <Stack alignItems={"center"}>
             <Typography level="h1">Todo List</Typography>
-            <Board initial={generateQuoteMap(500)}></Board>
+            <Board initial={generateTodoItemMap(15)}></Board>
           </Stack>
           {/*
           <Button onClick={addList}>Add List</Button>

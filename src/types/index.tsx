@@ -1,3 +1,5 @@
+import type { DraggableId, DraggableLocation } from "@hello-pangea/dnd";
+
 // https://stackoverflow.com/a/37144720
 export class GUID {
   public readonly str: string;
@@ -31,8 +33,6 @@ export type TTodoList = {
   description: string;
 };
 
-import type { DraggableId, DraggableLocation } from "@hello-pangea/dnd";
-
 export type Id = string;
 
 export interface Author {
@@ -53,6 +53,6 @@ export interface Dragging {
   location: DraggableLocation;
 }
 
-export interface QuoteMap {
+export interface TodoItemMap {
   [key: string]: Quote[];
 }

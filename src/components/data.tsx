@@ -5,7 +5,7 @@ import {
   GUID,
   type Author,
   type Quote,
-  type QuoteMap,
+  type TodoItemMap,
   type TTodoList,
   TTodoItem,
 } from "../types";
@@ -127,9 +127,9 @@ export const getQuotes = (count: number = quotes.length): Quote[] =>
     return custom;
   });
 
-export const generateQuoteMap = (quoteCount: number): QuoteMap =>
+export const generateTodoItemMap = (quoteCount: number): TodoItemMap =>
   authors.reduce(
-    (previous: QuoteMap, author: Author) => ({
+    (previous: TodoItemMap, author: Author) => ({
       ...previous,
       [author.id]: getQuotes(quoteCount / authors.length),
     }),
@@ -170,8 +170,8 @@ export function generateTodoItems(count: number, listId: GUID): TTodoItem[] {
 // export function generateTodoListMap(
 //   lists: TTodoList[],
 //   todoItems: TTodoItem[]
-// ): QuoteMap {
-//   lists.reduce((previous: QuoteMap, listId: GUID) => ({
+// ): TodoItemMap {
+//   lists.reduce((previous: TodoItemMap, listId: GUID) => ({
 //     ...previous,
 //     [listId.str]: todoItems.filter((e) => e.listId.str === listId.str),
 //   }));

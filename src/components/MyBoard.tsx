@@ -5,15 +5,15 @@ import type {
   DroppableProvided,
 } from "@hello-pangea/dnd";
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import type { QuoteMap, Quote } from "../types";
+import type { TodoItemMap, Quote } from "../types";
 import Column from "./MyColumn";
-import reorder, { reorderQuoteMap } from "../reorder";
+import reorder, { reorderTodoItemMap } from "../reorder";
 import { PartialAutoScrollerOptions } from "@hello-pangea/dnd/src/state/auto-scroller/fluid-scroller/auto-scroller-options-types";
 import { Stack } from "@mui/joy";
 
 interface Props {
-  initial: QuoteMap;
-  onChange?: (quotes: QuoteMap) => void;
+  initial: TodoItemMap;
+  onChange?: (quotes: TodoItemMap) => void;
   withScrollableColumns?: boolean;
   isCombineEnabled?: boolean;
   containerHeight?: string;
@@ -37,7 +37,7 @@ export default function Board(props: Props) {
       const column: Quote[] = quotes[result.source.droppableId];
       const withQuoteRemoved: Quote[] = [...column];
       withQuoteRemoved.splice(result.source.index, 1);
-      const columns: QuoteMap = {
+      const columns: TodoItemMap = {
         ...quotes,
         [result.source.droppableId]: withQuoteRemoved,
       };
@@ -73,7 +73,7 @@ export default function Board(props: Props) {
     }
 
     // reordering quotes
-    const data = reorderQuoteMap({
+    const data = reorderTodoItemMap({
       quoteMap: quotes,
       source,
       destination,
