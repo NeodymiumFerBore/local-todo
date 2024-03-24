@@ -7,14 +7,7 @@ import TodoList from "../primitives/TodoList";
 import type { Todo } from "../types";
 import AddIcon from "@mui/icons-material/Add";
 
-import {
-  Button,
-  Card,
-  CardOverflow,
-  Container,
-  Input,
-  Typography,
-} from "@mui/joy";
+import { Box, Button, Card, CardOverflow, Input, Typography } from "@mui/joy";
 import React, { useRef } from "react";
 
 interface Props {
@@ -40,7 +33,13 @@ export default function Column(props: Props) {
   return (
     <Draggable draggableId={title} index={index}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
-        <Container ref={provided.innerRef} {...provided.draggableProps}>
+        <Box
+          sx={{
+            p: 1,
+          }}
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+        >
           <Card
             sx={{
               maxWidth: 360,
@@ -83,7 +82,7 @@ export default function Column(props: Props) {
               useClone={Boolean(props.useClone)}
             />
           </Card>
-        </Container>
+        </Box>
       )}
     </Draggable>
   );
