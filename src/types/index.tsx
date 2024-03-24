@@ -45,7 +45,7 @@ export interface Author {
 export interface Quote {
   id: Id;
   content: string;
-  author: Author;
+  author: Id;
 }
 
 export interface Dragging {
