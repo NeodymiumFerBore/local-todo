@@ -4,7 +4,7 @@ import type {
   DraggableStateSnapshot,
 } from "@hello-pangea/dnd";
 import QuoteList from "../primatives/my-quote-list";
-import type { Quote } from "../types";
+import type { TTodoItem, TTodoList } from "../types";
 import AddIcon from "@mui/icons-material/Add";
 
 import {
@@ -18,8 +18,7 @@ import {
 import React, { useRef } from "react";
 
 interface Props {
-  title: string;
-  quotes: Quote[];
+  todoList: TTodoList;
   index: number;
   isScrollable?: boolean;
   isCombineEnabled?: boolean;
@@ -27,8 +26,8 @@ interface Props {
 }
 
 export default function Column(props: Props) {
-  const title: string = props.title;
-  const quotes: Quote[] = props.quotes;
+  const title: string = props.todoList.title;
+  const todos: TTodoItem[] = props.todoList.todos;
   const index: number = props.index;
   const itemRef = useRef<React.ElementRef<"input"> | undefined>();
 
@@ -38,7 +37,7 @@ export default function Column(props: Props) {
   }
 
   return (
-    <Draggable draggableId={title} index={index}>
+    <Draggable draggableId={props.todoList.id.str} index={index}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
         <Container ref={provided.innerRef} {...provided.draggableProps}>
           <Card
@@ -77,7 +76,7 @@ export default function Column(props: Props) {
               style={{
                 backgroundColor: snapshot.isDragging ? "#bbbbbb" : "#eeeeee",
               }}
-              quotes={quotes}
+              todos={todos}
               internalScroll={props.isScrollable}
               isCombineEnabled={Boolean(props.isCombineEnabled)}
               useClone={Boolean(props.useClone)}

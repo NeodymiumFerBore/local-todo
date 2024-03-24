@@ -1,6 +1,6 @@
 import React from "react";
 import type { DraggableProvided } from "@hello-pangea/dnd";
-import type { Quote } from "../types";
+import type { TTodoItem } from "../types";
 import {
   Checkbox,
   IconButton,
@@ -11,14 +11,14 @@ import {
 import { Delete } from "@mui/icons-material";
 
 interface Props {
-  quote: Quote;
+  todo: TTodoItem;
   isDragging: boolean;
   provided: DraggableProvided;
   isGroupedOver?: boolean;
 }
 
-export function QuoteItem(props: Props) {
-  const { quote, isDragging, isGroupedOver, provided } = props;
+export function TodoItem(props: Props) {
+  const { todo, isDragging, isGroupedOver, provided } = props;
 
   return (
     <div
@@ -42,11 +42,11 @@ export function QuoteItem(props: Props) {
         }
         // style={thisItem.done ? { opacity: 0.6 } : { opacity: 1 }}
       >
-        <ListItemButton>{quote.content}</ListItemButton>
+        <ListItemButton>{todo.content}</ListItemButton>
       </ListItem>
       <ListDivider inset="gutter" />
     </div>
   );
 }
 
-export default React.memo<Props>(QuoteItem);
+export default React.memo<Props>(TodoItem);

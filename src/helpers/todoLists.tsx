@@ -55,3 +55,11 @@ export function listsWithRemovedItem(
     return list;
   });
 }
+
+export function getTodoListsIDs(lists: TTodoList[]): string[] {
+  return Array.from(
+    lists.map((e) => {
+      return e.id.str;
+    })
+  );
+}

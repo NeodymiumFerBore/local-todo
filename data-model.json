@@ -1,0 +1,30 @@
+[
+  // todoLists
+  {
+    "id": "12341234-1234-1234-1234-1234567890123",
+    "title": "My Todo",
+    "description": "Everyday's todos",
+    // todoItems
+    "items": [
+      {
+        "id": "12341234-4567-4567-4567-1234567890123",
+        "title": "do stuff",
+        "description": "check out this link: somelink",
+        "done": false
+      }
+    ]
+  },
+  {
+    "id": "22341234-1234-1234-1234-1234567890123",
+    "title": "My Other Todo",
+    "description": "Work todos",
+    "items": [
+      {
+        "id": "22341234-4567-4567-4567-1234567890123",
+        "title": "do stuff",
+        "description": "check out this link: somelink",
+        "done": false
+      }
+    ]
+  }
+]

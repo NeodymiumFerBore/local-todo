@@ -1,5 +1,5 @@
 import type { DraggableLocation } from "@hello-pangea/dnd";
-import type { Quote, QuoteMap } from "./types";
+import type { TTodoItem, TTodoList, TodoListMap } from "./types";
 
 // a little function to help us with reordering the result
 function reorder<TItem>(
@@ -16,38 +16,45 @@ function reorder<TItem>(
 
 export default reorder;
 
-interface ReorderQuoteMapArgs {
-  quoteMap: QuoteMap;
+interface ReorderTodoListMapArgs {
+  todoListMap: TodoListMap;
   source: DraggableLocation;
   destination: DraggableLocation;
 }
 
-export interface ReorderQuoteMapResult {
-  quoteMap: QuoteMap;
+export interface ReorderTodoListMapResult {
+  todoListMap: TodoListMap;
 }
 
+/* Reorder Quotes within a QuoteMap */
 export const reorderQuoteMap = ({
-  quoteMap,
+  todoListMap,
   source,
   destination,
-}: ReorderQuoteMapArgs): ReorderQuoteMapResult => {
-  const current: Quote[] = [...quoteMap[source.droppableId]];
-  const next: Quote[] = [...quoteMap[destination.droppableId]];
-  const target: Quote = current[source.index];
+}: ReorderTodoListMapArgs): ReorderTodoListMapResult => {
+  // Current list of todos
+  const current: TTodoItem[] = [...todoListMap[source.droppableId].todos];
+  // New list of todos
+  const next: TTodoItem[] = [...todoListMap[destination.droppableId].todos];
+  // The todo thta was moved
+  const target: TTodoItem = current[source.index];
 
   // moving to same list
   if (source.droppableId === destination.droppableId) {
-    const reordered: Quote[] = reorder(
+    const reordered: TTodoItem[] = reorder(
       current,
       source.index,
       destination.index
     );
-    const result: QuoteMap = {
-      ...quoteMap,
-      [source.droppableId]: reordered,
+    const result: TodoListMap = {
+      ...todoListMap,
+      [source.droppableId]: {
+        ...todoListMap[source.droppableId],
+        todos: reordered,
+      },
     };
     return {
-      quoteMap: result,
+      todoListMap: result,
     };
   }
 
@@ -58,8 +65,8 @@ export const reorderQuoteMap = ({
   // insert into next
   next.splice(destination.index, 0, target);
 
-  const result: QuoteMap = {
-    ...quoteMap,
+  const result: TodoListMap = {
+    ...todoListMap,
     [source.droppableId]: current,
     [destination.droppableId]: next,
   };

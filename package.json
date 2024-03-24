@@ -13,17 +13,20 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
+    "@hello-pangea/dnd": "^16.5.0",
     "@mui/icons-material": "^5.15.13",
     "@mui/joy": "^5.0.0-beta.31",
     "@mui/material": "^5.15.13",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "seedrandom": "^3.0.5"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.28",
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
+    "@types/seedrandom": "^3.0.8",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",
     "@vitejs/plugin-react-swc": "^3.5.0",

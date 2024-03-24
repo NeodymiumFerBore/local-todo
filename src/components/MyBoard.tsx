@@ -5,15 +5,16 @@ import type {
   DroppableProvided,
 } from "@hello-pangea/dnd";
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import type { QuoteMap, Quote } from "../types";
+import type { TTodoList, TTodoItem, TodoListMap } from "../types";
 import Column from "./MyColumn";
 import reorder, { reorderQuoteMap } from "../reorder";
 import { PartialAutoScrollerOptions } from "@hello-pangea/dnd/src/state/auto-scroller/fluid-scroller/auto-scroller-options-types";
 import { Stack } from "@mui/joy";
+import { getTodoListsIDs } from "@/helpers/todoLists";
 
 interface Props {
-  initial: QuoteMap;
-  onChange?: (quotes: QuoteMap) => void;
+  initial: TodoListMap;
+  onChange?: (todoLists: TodoListMap) => void;
   withScrollableColumns?: boolean;
   isCombineEnabled?: boolean;
   containerHeight?: string;
@@ -22,28 +23,31 @@ interface Props {
 }
 
 export default function Board(props: Props) {
-  const [quotes, setQuotes] = useState(props.initial);
+  const [todoLists, setTodoLists] = useState(props.initial);
   const [ordered, setOrdered] = useState(Object.keys(props.initial));
 
   function onDragEnd(result: DropResult): void {
-    if (result.combine) {
-      if (result.type === "COLUMN") {
-        const shallow: string[] = [...ordered];
-        shallow.splice(result.source.index, 1);
-        setOrdered(shallow);
-        return;
-      }
+    // if (result.combine) {
+    //   if (result.type === "COLUMN") {
+    //     const shallow: string[] = [...ordered];
+    //     shallow.splice(result.source.index, 1);
+    //     setOrdered(shallow);
+    //     return;
+    //   }
 
-      const column: Quote[] = quotes[result.source.droppableId];
-      const withQuoteRemoved: Quote[] = [...column];
-      withQuoteRemoved.splice(result.source.index, 1);
-      const columns: QuoteMap = {
-        ...quotes,
-        [result.source.droppableId]: withQuoteRemoved,
-      };
-      setQuotes(columns);
-      return;
-    }
+    //   // const column: TTodoList = quotes[result.source.droppableId];
+    //   const column: TTodoList = todoLists.find(
+    //     (e) => e.id.str === result.source.droppableId
+    //   )!;
+    //   const withQuoteRemoved: Quote[] = [...column];
+    //   withQuoteRemoved.splice(result.source.index, 1);
+    //   const columns: QuoteMap = {
+    //     ...quotes,
+    //     [result.source.droppableId]: withQuoteRemoved,
+    //   };
+    //   setQuotes(columns);
+    //   return;
+    // }
 
     // dropped nowhere
     if (!result.destination) {
@@ -74,12 +78,12 @@ export default function Board(props: Props) {
 
     // reordering quotes
     const data = reorderQuoteMap({
-      quoteMap: quotes,
+      todoListMap: todoLists,
       source,
       destination,
     });
 
-    setQuotes(data.quoteMap);
+    setTodoLists(data.todoListMap);
   }
 
   return (
@@ -107,8 +111,7 @@ export default function Board(props: Props) {
               <Column
                 key={key}
                 index={index}
-                title={key}
-                quotes={quotes[key]}
+                todoList={todoLists[key]}
                 isScrollable={props.withScrollableColumns}
                 isCombineEnabled={props.isCombineEnabled}
                 useClone={props.useClone}

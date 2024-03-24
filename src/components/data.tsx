@@ -1,7 +1,15 @@
 import { colors } from "@mui/joy";
 import { purple } from "@mui/material/colors";
 import seedrandom from "seedrandom";
-import type { Author, Quote, QuoteMap } from "../types";
+import {
+  GUID,
+  type Author,
+  type Quote,
+  type QuoteMap,
+  type TTodoList,
+  type TTodoItem,
+  TodoListMap,
+} from "../types";
 
 const jake: Author = {
   id: "1",
@@ -143,3 +151,47 @@ export const generateQuoteMap = (quoteCount: number): QuoteMap =>
     }),
     {}
   );
+
+export function generateTodoItems(count: number, listId: GUID): TTodoItem[] {
+  return Array.from({ length: count }, (_, k) => k).map(() => {
+    return {
+      id: new GUID(),
+      listId: new GUID(listId.str),
+      content:
+        quotes[Math.floor(predictableMathRandom() * quotes.length)].content,
+      done: false,
+    };
+  });
+}
+
+export function generateTodoList(
+  title: string = "",
+  desc: string = ""
+): TTodoList {
+  return {
+    id: new GUID(),
+    title: title || "List 1",
+    description: desc || "My list",
+  };
+}
+
+export function generateTodoLists(
+  listCount: number = 3
+  // todosCountMin: number = 5,
+  // todosCountMax: number = 10
+): TTodoList[] {
+  return Array.from({ length: listCount }, (_, k) => k).map(() => {
+    return generateTodoList();
+  });
+  // return Array.from({ length: listCount }, (_, k) => k).map((_, i) => {
+  //   const c = Math.floor(
+  //     Math.random() * (todosCountMax - todosCountMin + 1) + todosCountMin
+  //   );
+  //   return generateTodoList(c, `List`, `Description of list ${i + 1}`);
+  // });
+}
+
+export function generateTodoListMap(lists: TTodoList[]): TodoListMap {
+  const ids = Array.from(lists, (v, _) => v.id.str);
+  return ids.reduce((map, id, i) => ({ ...map, [id]: lists[i] }), {});
+}
