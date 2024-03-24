@@ -19,7 +19,7 @@ import React, { useRef } from "react";
 
 interface Props {
   title: string;
-  quotes: Todo[];
+  todos: Todo[];
   index: number;
   isScrollable?: boolean;
   isCombineEnabled?: boolean;
@@ -28,7 +28,7 @@ interface Props {
 
 export default function Column(props: Props) {
   const title: string = props.title;
-  const quotes: Todo[] = props.quotes;
+  const todos: Todo[] = props.todos;
   const index: number = props.index;
   const itemRef = useRef<React.ElementRef<"input"> | undefined>();
 
@@ -77,7 +77,7 @@ export default function Column(props: Props) {
               style={{
                 backgroundColor: snapshot.isDragging ? "#bbbbbb" : "#eeeeee",
               }}
-              quotes={quotes}
+              todos={todos}
               internalScroll={props.isScrollable}
               isCombineEnabled={Boolean(props.isCombineEnabled)}
               useClone={Boolean(props.useClone)}

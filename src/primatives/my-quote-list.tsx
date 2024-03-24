@@ -13,7 +13,7 @@ import { Box, List, Typography } from "@mui/joy";
 interface Props {
   listId?: string;
   listType?: string;
-  quotes: Todo[];
+  todos: Todo[];
   title?: string;
   internalScroll?: boolean;
   scrollContainerStyle?: CSSProperties;
@@ -26,22 +26,22 @@ interface Props {
 }
 
 interface TodoListProps {
-  quotes: Todo[];
+  todos: Todo[];
 }
 
 function InnerTodoList(props: TodoListProps): ReactElement {
   return (
     <>
       <List>
-        {props.quotes.map((quote: Todo, index: number) => (
-          <Draggable key={quote.id} draggableId={quote.id} index={index}>
+        {props.todos.map((todo: Todo, index: number) => (
+          <Draggable key={todo.id} draggableId={todo.id} index={index}>
             {(
               dragProvided: DraggableProvided,
               dragSnapshot: DraggableStateSnapshot
             ) => (
               <TodoItem
-                key={quote.id}
-                quote={quote}
+                key={todo.id}
+                todo={todo}
                 isDragging={dragSnapshot.isDragging}
                 isGroupedOver={Boolean(dragSnapshot.combineTargetFor)}
                 provided={dragProvided}
@@ -58,12 +58,12 @@ const InnerTodoListMemo = React.memo<TodoListProps>(InnerTodoList);
 
 interface InnerListProps {
   dropProvided: DroppableProvided;
-  quotes: Todo[];
+  todos: Todo[];
   title: string | undefined | null;
 }
 
 function InnerList(props: InnerListProps) {
-  const { quotes, dropProvided } = props;
+  const { todos, dropProvided } = props;
   const title = props.title ? (
     <Typography level="title-md">{props.title}</Typography>
   ) : null;
@@ -75,7 +75,7 @@ function InnerList(props: InnerListProps) {
         sx={{ margin: 0, padding: 0, border: 0 }}
         ref={dropProvided.innerRef}
       >
-        <InnerTodoListMemo quotes={quotes} />
+        <InnerTodoListMemo todos={todos} />
         {dropProvided.placeholder}
       </Box>
     </Box>
@@ -89,7 +89,7 @@ export default function TodoList(props: Props): ReactElement {
     isCombineEnabled,
     listId = "LIST",
     listType,
-    quotes,
+    todos,
     title,
     useClone,
   } = props;
@@ -105,7 +105,7 @@ export default function TodoList(props: Props): ReactElement {
         useClone
           ? (provided, snapshot, descriptor) => (
               <TodoItem
-                quote={quotes[descriptor.source.index]}
+                todo={todos[descriptor.source.index]}
                 provided={provided}
                 isDragging={snapshot.isDragging}
               />
@@ -117,7 +117,7 @@ export default function TodoList(props: Props): ReactElement {
         dropProvided: DroppableProvided,
         dropSnapshot: DroppableStateSnapshot
       ) => (
-        <InnerList quotes={quotes} title={title} dropProvided={dropProvided} />
+        <InnerList todos={todos} title={title} dropProvided={dropProvided} />
       )}
     </Droppable>
   );

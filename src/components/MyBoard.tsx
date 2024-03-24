@@ -13,7 +13,7 @@ import { Stack } from "@mui/joy";
 
 interface Props {
   initial: TodoItemMap;
-  onChange?: (quotes: TodoItemMap) => void;
+  onChange?: (todos: TodoItemMap) => void;
   withScrollableColumns?: boolean;
   isCombineEnabled?: boolean;
   containerHeight?: string;
@@ -22,7 +22,7 @@ interface Props {
 }
 
 export default function Board(props: Props) {
-  const [quotes, setTodos] = useState(props.initial);
+  const [todos, setTodos] = useState(props.initial);
   const [ordered, setOrdered] = useState(Object.keys(props.initial));
 
   function onDragEnd(result: DropResult): void {
@@ -34,11 +34,11 @@ export default function Board(props: Props) {
         return;
       }
 
-      const column: Todo[] = quotes[result.source.droppableId];
+      const column: Todo[] = todos[result.source.droppableId];
       const withTodoRemoved: Todo[] = [...column];
       withTodoRemoved.splice(result.source.index, 1);
       const columns: TodoItemMap = {
-        ...quotes,
+        ...todos,
         [result.source.droppableId]: withTodoRemoved,
       };
       setTodos(columns);
@@ -72,9 +72,9 @@ export default function Board(props: Props) {
       return;
     }
 
-    // reordering quotes
+    // reordering todos
     const data = reorderTodoItemMap({
-      todoItemMap: quotes,
+      todoItemMap: todos,
       source,
       destination,
     });
@@ -108,7 +108,7 @@ export default function Board(props: Props) {
                 key={key}
                 index={index}
                 title={key}
-                quotes={quotes[key]}
+                todos={todos[key]}
                 isScrollable={props.withScrollableColumns}
                 isCombineEnabled={props.isCombineEnabled}
                 useClone={props.useClone}

@@ -36,7 +36,7 @@ const list4: TTodoList = {
 
 export const todoLists: TTodoList[] = [list1, list2, list3, list4];
 
-export const quotes: Todo[] = [
+export const todos: Todo[] = [
   {
     id: "7343fe89-5119-4248-b5d3-59bcf13d0ed5",
     content: "Sometimes life is scary and dark",
@@ -112,11 +112,11 @@ export const resetData = (seed: string) => {
 
 resetData("base");
 
-export const getTodos = (count: number = quotes.length): Todo[] =>
+export const getTodos = (count: number = todos.length): Todo[] =>
   // eslint-disable-next-line no-restricted-syntax
   Array.from({ length: count }, (_, k) => k).map(() => {
     const random: Todo =
-      quotes[Math.floor(predictableMathRandom() * quotes.length)];
+      todos[Math.floor(predictableMathRandom() * todos.length)];
 
     const custom: Todo = {
       ...random,
@@ -127,11 +127,11 @@ export const getTodos = (count: number = quotes.length): Todo[] =>
     return custom;
   });
 
-export const generateTodoItemMap = (quoteCount: number): TodoItemMap =>
+export const generateTodoItemMap = (todoCount: number): TodoItemMap =>
   todoLists.reduce(
     (previous: TodoItemMap, todoList: TTodoList) => ({
       ...previous,
-      [todoList.id]: getTodos(quoteCount / todoLists.length),
+      [todoList.id]: getTodos(todoCount / todoLists.length),
     }),
     {}
   );
@@ -161,7 +161,7 @@ export function generateTodoItems(count: number, listId: GUID): TTodoItem[] {
       id: new GUID(),
       listId: new GUID(listId.str),
       content:
-        quotes[Math.floor(predictableMathRandom() * quotes.length)].content,
+        todos[Math.floor(predictableMathRandom() * todos.length)].content,
       done: false,
     };
   });

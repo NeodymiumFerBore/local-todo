@@ -11,14 +11,14 @@ import {
 import { Delete } from "@mui/icons-material";
 
 interface Props {
-  quote: Todo;
+  todo: Todo;
   isDragging: boolean;
   provided: DraggableProvided;
   isGroupedOver?: boolean;
 }
 
 export function TodoItem(props: Props) {
-  const { quote, isDragging, isGroupedOver, provided } = props;
+  const { todo, isDragging, isGroupedOver, provided } = props;
 
   return (
     <div
@@ -42,7 +42,7 @@ export function TodoItem(props: Props) {
         }
         // style={thisItem.done ? { opacity: 0.6 } : { opacity: 1 }}
       >
-        <ListItemButton>{quote.content}</ListItemButton>
+        <ListItemButton>{todo.content}</ListItemButton>
       </ListItem>
       <ListDivider inset="gutter" />
     </div>
