@@ -3,38 +3,38 @@ import { purple } from "@mui/material/colors";
 import seedrandom from "seedrandom";
 import {
   GUID,
-  type Author,
+  type TTodoList,
   type Quote,
   type TodoItemMap,
   type TTodoList,
   TTodoItem,
 } from "../types";
 
-const list1: Author = {
+const list1: TTodoList = {
   id: "44114432-bd0b-42a7-b241-99b41cf2284f",
   name: "List 1",
   description: "My list 1",
 };
 
-const list2: Author = {
+const list2: TTodoList = {
   id: "e48a836c-3813-4d00-b5a8-6c7f4d4f1db2",
   name: "List 2",
   description: "My list 2",
 };
 
-const list3: Author = {
+const list3: TTodoList = {
   id: "93284ea7-3c76-4d80-92ec-d8f70b1dfa40",
   name: "List 3",
   description: "My list 3",
 };
 
-const list4: Author = {
+const list4: TTodoList = {
   id: "750701bc-8c61-44f7-a34e-b514fec3b8a3",
   name: "List 4",
   description: "My list 4",
 };
 
-export const authors: Author[] = [list1, list2, list3, list4];
+export const authors: TTodoList[] = [list1, list2, list3, list4];
 
 export const quotes: Quote[] = [
   {
@@ -129,7 +129,7 @@ export const getQuotes = (count: number = quotes.length): Quote[] =>
 
 export const generateTodoItemMap = (quoteCount: number): TodoItemMap =>
   authors.reduce(
-    (previous: TodoItemMap, author: Author) => ({
+    (previous: TodoItemMap, author: TTodoList) => ({
       ...previous,
       [author.id]: getQuotes(quoteCount / authors.length),
     }),

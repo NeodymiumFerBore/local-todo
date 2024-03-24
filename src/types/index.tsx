@@ -27,15 +27,15 @@ export type TTodoItem = {
   done: boolean;
 };
 
-export type TTodoList = {
-  id: GUID;
-  title: string;
-  description: string;
-};
+// export type TTodoList = {
+//   id: GUID;
+//   title: string;
+//   description: string;
+// };
 
 export type Id = string;
 
-export interface Author {
+export interface TTodoList {
   // id: GUID;
   id: string;
   name: string;
