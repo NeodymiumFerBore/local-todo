@@ -25,11 +25,11 @@ interface Props {
   useClone?: boolean;
 }
 
-interface QuoteListProps {
+interface TodoListProps {
   quotes: Todo[];
 }
 
-function InnerQuoteList(props: QuoteListProps): ReactElement {
+function InnerTodoList(props: TodoListProps): ReactElement {
   return (
     <>
       <List>
@@ -54,7 +54,7 @@ function InnerQuoteList(props: QuoteListProps): ReactElement {
   );
 }
 
-const InnerQuoteListMemo = React.memo<QuoteListProps>(InnerQuoteList);
+const InnerTodoListMemo = React.memo<TodoListProps>(InnerTodoList);
 
 interface InnerListProps {
   dropProvided: DroppableProvided;
@@ -75,14 +75,14 @@ function InnerList(props: InnerListProps) {
         sx={{ margin: 0, padding: 0, border: 0 }}
         ref={dropProvided.innerRef}
       >
-        <InnerQuoteListMemo quotes={quotes} />
+        <InnerTodoListMemo quotes={quotes} />
         {dropProvided.placeholder}
       </Box>
     </Box>
   );
 }
 
-export default function QuoteList(props: Props): ReactElement {
+export default function TodoList(props: Props): ReactElement {
   const {
     ignoreContainerClipping,
     isDropDisabled,

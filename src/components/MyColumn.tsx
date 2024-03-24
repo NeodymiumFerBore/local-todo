@@ -3,7 +3,7 @@ import type {
   DraggableProvided,
   DraggableStateSnapshot,
 } from "@hello-pangea/dnd";
-import QuoteList from "../primatives/my-quote-list";
+import TodoList from "../primatives/my-quote-list";
 import type { Todo } from "../types";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -71,7 +71,7 @@ export default function Column(props: Props) {
                 }
               />
             </form>
-            <QuoteList
+            <TodoList
               listId={title}
               listType="QUOTE"
               style={{
