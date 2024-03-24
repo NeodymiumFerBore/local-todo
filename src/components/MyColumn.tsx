@@ -3,7 +3,7 @@ import type {
   DraggableProvided,
   DraggableStateSnapshot,
 } from "@hello-pangea/dnd";
-import TodoList from "../primatives/my-quote-list";
+import TodoList from "../primatives/TodoList";
 import type { Todo } from "../types";
 import AddIcon from "@mui/icons-material/Add";
 

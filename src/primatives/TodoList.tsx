@@ -6,7 +6,7 @@ import type {
   DraggableProvided,
   DraggableStateSnapshot,
 } from "@hello-pangea/dnd";
-import TodoItem from "./my-quote-item";
+import TodoItem from "./TodoItem";
 import type { Todo } from "../types";
 import { Box, List, Typography } from "@mui/joy";
 
