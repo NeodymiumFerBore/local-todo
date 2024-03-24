@@ -26,6 +26,9 @@ const list4: TTodoList = {
 };
 
 export const todoLists: TTodoList[] = [list1, list2, list3, list4];
+// export const todoLists: TTodoList[] = [list1, list2, list3];
+// export const todoLists: TTodoList[] = [list1, list2];
+// export const todoLists: TTodoList[] = [list1];
 
 export const todos: Todo[] = [
   {
@@ -108,6 +111,12 @@ export function generateTodoItemMap(): TodoItemMap {
   );
 }
 
+export function generateTodoItemBunch(count: number): Todo[] {
+  return Array.from({ length: count }, (_, k) => k).map((i) => {
+    return { ...todos[i % todos.length], id: crypto.randomUUID() };
+  });
+}
+
 export function generateTodoItemMapBunch(count: number): TodoItemMap {
   let map = generateTodoItemMap();
   for (let i = 1; i < count; i++) {
@@ -122,6 +131,19 @@ export function generateTodoItemMapBunch(count: number): TodoItemMap {
     });
   }
   return map;
+}
+
+export function generateTodoItemMapFromData(
+  todos: Todo[],
+  lists: TTodoList[]
+): TodoItemMap {
+  return lists.reduce(
+    (previous: TodoItemMap, todoList: TTodoList) => ({
+      ...previous,
+      [todoList.id]: todos.filter((e) => e.todoList === todoList.id),
+    }),
+    {}
+  );
 }
 
 /****************************************************/
