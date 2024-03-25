@@ -1,5 +1,5 @@
 import { GUID, TTodoList } from "@/types";
-import { Box, Button, Grid, Stack } from "@mui/joy";
+import { Box, Button, Stack } from "@mui/joy";
 import { SxProps } from "@mui/system";
 import { useCallback, useState } from "react";
 import { TodoList } from "./TodoList";
@@ -24,7 +24,7 @@ function Board(props: Props) {
   console.log("Rendering Board");
   return (
     <>
-      <Stack width="100%">
+      <Stack sx={props.sx}>
         <Box justifyContent={"center"} display={"flex"}>
           <Button onClick={addTodoList}>Add List</Button>
         </Box>
