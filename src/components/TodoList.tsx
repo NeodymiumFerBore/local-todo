@@ -86,7 +86,7 @@ export function TodoList({ listId }: Props) {
           );
         })}
       </List>
-      <ul className="list">{todos.length === 0 && "No Todos"}</ul>
+      {todos.length === 0 && "No Todos"}
     </Card>
   );
 }
