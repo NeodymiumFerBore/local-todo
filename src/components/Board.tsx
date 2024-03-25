@@ -28,15 +28,12 @@ function Board(props: Props) {
         <Box justifyContent={"center"} display={"flex"}>
           <Button onClick={addTodoList}>Add List</Button>
         </Box>
-        <Stack
-          direction="row"
-          spacing={2}
-          alignSelf="center"
-          sx={{ overflowWrap: "revert" }}
-        >
+        <Stack direction="row" spacing={2} alignSelf="center">
           {todoLists.length === 0 && "No TodoList"}
           {todoLists.map((list) => {
-            return <TodoList key={list.id.toString()} thisTodoList={list} />;
+            return (
+              <TodoList key={list.id.toString()} listId={list.id.toString()} />
+            );
           })}
         </Stack>
       </Stack>
