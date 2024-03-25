@@ -1,38 +1,66 @@
-import { useRef } from "react";
-import { GUID, TTodoList } from "@/types";
-import { useTodoListsContext } from "@/contexts/Todo";
-import { listsWithUpdatedItem } from "@/helpers/todoLists";
+import React, { useCallback, useRef, useState } from "react";
+import { GUID, TTodoItem } from "@/types";
 
 import Card from "@mui/joy/Card";
 import AddIcon from "@mui/icons-material/Add";
 import { Input, Button, Typography, List } from "@mui/joy";
-import { TodoItem } from "./TodoItem";
+import TodoItem, { todoChangeEvent } from "./TodoItem";
 
 type Props = {
-  thisTodoList: TTodoList;
+  listId: string;
 };
 
 // export function TodoList({ todos, toggleTodo, deleteTodo }) {
-export function TodoList({ thisTodoList }: Props) {
-  const { todoLists, setTodoLists } = useTodoListsContext();
+export function TodoList({ listId }: Props) {
+  const [todos, setTodos] = useState<TTodoItem[]>([]);
   const itemRef = useRef<React.ElementRef<"input"> | undefined>();
 
-  function addTodoItem(e: React.FormEvent) {
+  const addTodo = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-    setTodoLists(
-      listsWithUpdatedItem(todoLists, thisTodoList.id, {
-        id: new GUID(),
-        title: itemRef.current?.value || "",
-        description: "",
-        done: false,
-      })
-    );
-  }
+    setTodos((curr) => {
+      return [
+        ...curr,
+        {
+          id: new GUID(),
+          title: itemRef.current?.value || "",
+          description: "",
+          done: false,
+        },
+      ];
+    });
+  }, []);
+
+  const removeTodo = useCallback((id: string) => {
+    setTodos((curr) => {
+      return curr.filter((e) => e.id.toString() !== id);
+    });
+  }, []);
+
+  const updateTodo = useCallback((id: string, type: todoChangeEvent) => {
+    switch (type) {
+      case "done": {
+        setTodos((curr) => {
+          return curr.map((e) => {
+            if (e.id.toString() === id) return { ...e, done: !e.done };
+            else return e;
+          });
+        });
+        break;
+      }
+      case "update": {
+        console.log("Item updated", id);
+        break;
+      }
+      default:
+        console.log("Not implemented");
+        break;
+    }
+  }, []);
 
   return (
-    <Card>
-      <Typography level="title-lg">{thisTodoList.title}</Typography>
-      <form onSubmit={addTodoItem}>
+    <Card sx={{ height: "fit-content" }}>
+      <Typography level="title-lg">{listId}</Typography>
+      <form onSubmit={addTodo}>
         <Input
           slotProps={{
             input: { ref: itemRef as React.RefObject<HTMLInputElement> },
@@ -47,17 +75,18 @@ export function TodoList({ thisTodoList }: Props) {
         />
       </form>
       <List>
-        {thisTodoList.items.map((todo) => {
+        {todos.map((todo) => {
           return (
             <TodoItem
-              ownerList={thisTodoList.id}
               thisItem={todo}
+              onChange={updateTodo}
+              onDelete={removeTodo}
               key={todo.id.toString()}
             />
           );
         })}
       </List>
-      <ul className="list">{thisTodoList.items.length === 0 && "No Todos"}</ul>
+      <ul className="list">{todos.length === 0 && "No Todos"}</ul>
     </Card>
   );
 }
