@@ -12,17 +12,13 @@ interface Props {
   onDelete?: (id: string) => void;
 }
 
-function TodoItem({
-  thisItem,
-  onChange = (_, __) => {},
-  onDelete = (_) => {},
-}: Props) {
+function TodoItem({ thisItem, onChange, onDelete }: Props) {
   function notifyDone() {
-    onChange(thisItem.id.toString(), "done");
+    onChange?.(thisItem.id.toString(), "done");
   }
 
   function notifyDelete() {
-    onDelete(thisItem.id.toString());
+    onDelete?.(thisItem.id.toString());
   }
 
   return (
