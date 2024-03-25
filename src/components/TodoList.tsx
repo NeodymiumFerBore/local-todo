@@ -59,7 +59,7 @@ export function TodoList({ listId }: Props) {
   }
 
   return (
-    <Card>
+    <Card sx={{ height: "fit-content" }}>
       <Typography level="title-lg">{listId}</Typography>
       <form onSubmit={addTodo}>
         <Input
