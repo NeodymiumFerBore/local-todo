@@ -25,8 +25,13 @@ function TodoItem({ thisItem, onChange, onDelete }: Props) {
     <ListItem
       startAction={<Checkbox checked={thisItem.done} onChange={notifyDone} />}
       endAction={
-        <IconButton aria-label="Delete" size="sm" color="danger">
-          <Delete onClick={notifyDelete} />
+        <IconButton
+          aria-label="Delete"
+          size="sm"
+          color="danger"
+          onClick={notifyDelete}
+        >
+          <Delete />
         </IconButton>
       }
       style={thisItem.done ? { opacity: 0.6 } : { opacity: 1 }}
