@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { GUID, TTodoItem } from "@/types";
 
 import Card from "@mui/joy/Card";
@@ -15,7 +15,7 @@ export function TodoList({ listId }: Props) {
   const [todos, setTodos] = useState<TTodoItem[]>([]);
   const itemRef = useRef<React.ElementRef<"input"> | undefined>();
 
-  function addTodo(e: React.FormEvent) {
+  const addTodo = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     setTodos((curr) => {
       return [
@@ -28,18 +28,17 @@ export function TodoList({ listId }: Props) {
         },
       ];
     });
-  }
+  }, []);
 
-  function removeTodo(id: string) {
+  const removeTodo = useCallback((id: string) => {
     setTodos((curr) => {
       return curr.filter((e) => e.id.toString() !== id);
     });
-  }
+  }, []);
 
-  function updateTodo(id: string, type: todoChangeEvent) {
+  const updateTodo = useCallback((id: string, type: todoChangeEvent) => {
     switch (type) {
       case "done": {
-        console.log("Item is done", id);
         setTodos((curr) => {
           return curr.map((e) => {
             if (e.id.toString() === id) return { ...e, done: !e.done };
@@ -56,7 +55,7 @@ export function TodoList({ listId }: Props) {
         console.log("Not implemented");
         break;
     }
-  }
+  }, []);
 
   return (
     <Card sx={{ height: "fit-content" }}>
