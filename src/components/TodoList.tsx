@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
-import { GUID, TTodoItem } from "@/types";
+import { TTodoItem, createId } from "@/types";
 
 import Card from "@mui/joy/Card";
 import AddIcon from "@mui/icons-material/Add";
@@ -21,7 +21,7 @@ export function TodoList({ listId }: Props) {
       return [
         ...curr,
         {
-          id: new GUID(),
+          id: createId(),
           title: itemRef.current?.value || "",
           description: "",
           done: false,
@@ -32,7 +32,7 @@ export function TodoList({ listId }: Props) {
 
   const removeTodo = useCallback((id: string) => {
     setTodos((curr) => {
-      return curr.filter((e) => e.id.toString() !== id);
+      return curr.filter((e) => e.id !== id);
     });
   }, []);
 
@@ -41,7 +41,7 @@ export function TodoList({ listId }: Props) {
       case "done": {
         setTodos((curr) => {
           return curr.map((e) => {
-            if (e.id.toString() === id) return { ...e, done: !e.done };
+            if (e.id === id) return { ...e, done: !e.done };
             else return e;
           });
         });
@@ -81,7 +81,7 @@ export function TodoList({ listId }: Props) {
               thisItem={todo}
               onChange={updateTodo}
               onDelete={removeTodo}
-              key={todo.id.toString()}
+              key={todo.id}
             />
           );
         })}
