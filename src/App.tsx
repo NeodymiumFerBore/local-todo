@@ -2,9 +2,10 @@ import { useState } from "react";
 import "./styles.css";
 import { TodoList } from "./components/TodoList";
 import { TodoListsContext } from "./contexts/Todo";
-import { GUID, TTodoList } from "./types";
-import { Button, CssVarsProvider } from "@mui/joy";
+import { GUID, TTodoItem, TTodoList } from "./types";
+import { Box, Button, CssVarsProvider, Stack } from "@mui/joy";
 import { ThemeToggle } from "./components/ThemeToggle";
+import Board from "./components/Board";
 
 export default function App() {
   // const [todos, setTodos] = useState(() => {
@@ -14,6 +15,7 @@ export default function App() {
   //   return JSON.parse(localValue);
   // });
 
+  const [todos, setTodos] = useState<TTodoItem[]>([]);
   const [todoLists, setTodoLists] = useState<TTodoList[]>([]);
 
   // useEffect(() => {
@@ -40,13 +42,9 @@ export default function App() {
         <ThemeToggle />
         <TodoListsContext.Provider value={{ todoLists, setTodoLists }}>
           <h1 className="header">Todo List</h1>
-          <Button onClick={addList}>Add List</Button>
-          <div>
-            {todoLists.length === 0 && "No TodoList"}
-            {todoLists.map((list) => {
-              return <TodoList key={list.id.toString()} thisTodoList={list} />;
-            })}
-          </div>
+          <Stack sx={{ alignItems: "center" }}>
+            <Board sx={{}} />
+          </Stack>
         </TodoListsContext.Provider>
       </CssVarsProvider>
     </>
