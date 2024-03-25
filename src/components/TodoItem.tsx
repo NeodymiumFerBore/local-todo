@@ -1,45 +1,36 @@
-import { useTodoListsContext } from "@/contexts/Todo";
-import { TTodoItem, GUID } from "@/types/index";
-import {
-  listsWithRemovedItem,
-  listsWithUpdatedItem,
-} from "@/helpers/todoLists";
+import { TTodoItem } from "@/types/index";
 
 import { Checkbox, IconButton, ListItem, ListItemButton } from "@mui/joy";
 import { Delete } from "@mui/icons-material";
+import { memo } from "react";
 
-type Props = {
-  ownerList: GUID;
+export type todoChangeEvent = "done" | "update";
+
+interface Props {
   thisItem: TTodoItem;
-};
+  onChange?: (id: string, type: todoChangeEvent) => void;
+  onDelete?: (id: string) => void;
+}
 
-export function TodoItem({ ownerList, thisItem }: Props) {
-  const { todoLists, setTodoLists } = useTodoListsContext();
-
-  function deleteTodo() {
-    setTodoLists(listsWithRemovedItem(todoLists, ownerList, thisItem));
+function TodoItem({
+  thisItem,
+  onChange = (_, __) => {},
+  onDelete = (_) => {},
+}: Props) {
+  function notifyDone() {
+    onChange(thisItem.id.toString(), "done");
   }
 
-  function toggleTodo(checked: boolean) {
-    setTodoLists(
-      listsWithUpdatedItem(todoLists, ownerList, {
-        ...thisItem,
-        done: checked,
-      })
-    );
+  function notifyDelete() {
+    onDelete(thisItem.id.toString());
   }
 
   return (
     <ListItem
-      startAction={
-        <Checkbox
-          checked={thisItem.done}
-          onChange={(e) => toggleTodo(e.target.checked)}
-        />
-      }
+      startAction={<Checkbox checked={thisItem.done} onChange={notifyDone} />}
       endAction={
         <IconButton aria-label="Delete" size="sm" color="danger">
-          <Delete onClick={deleteTodo} />
+          <Delete onClick={notifyDelete} />
         </IconButton>
       }
       style={thisItem.done ? { opacity: 0.6 } : { opacity: 1 }}
@@ -48,3 +39,5 @@ export function TodoItem({ ownerList, thisItem }: Props) {
     </ListItem>
   );
 }
+
+export default memo<Props>(TodoItem);
