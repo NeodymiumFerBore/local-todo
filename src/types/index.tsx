@@ -1,36 +1,30 @@
-// https://stackoverflow.com/a/37144720
-export class GUID {
-  private readonly str: string;
-  static readonly validPattern: RegExp =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+export type Id = string & { _idBrand: "Id" };
 
-  constructor(str?: string) {
-    if (str === undefined) {
-      this.str = crypto.randomUUID();
-    } else {
-      if (GUID.validate(str)) this.str = str;
-      else throw new Error("String '" + str + "' is not a valid GUID");
-    }
-  }
+function isId(id: string): id is Id {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(
+    id
+  );
+}
 
-  toString() {
-    return this.str;
+export function createId(id?: string): Id {
+  if (!id) {
+    return crypto.randomUUID() as Id;
   }
-
-  public static validate(guid: string): boolean {
-    return GUID.validPattern.test(guid);
+  if (!isId(id)) {
+    throw new Error("Invalid id format");
   }
+  return id as Id;
 }
 
 export type TTodoItem = {
-  id: GUID;
+  id: Id;
   title: string;
   description: string;
   done: boolean;
 };
 
 export type TTodoList = {
-  id: GUID;
+  id: Id;
   title: string;
   description: string;
   items: TTodoItem[];

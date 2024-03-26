@@ -1,4 +1,4 @@
-import { GUID, TTodoList } from "@/types";
+import { TTodoList, createId } from "@/types";
 import { Box, Button, Stack } from "@mui/joy";
 import { SxProps } from "@mui/system";
 import { useCallback, useState } from "react";
@@ -16,7 +16,7 @@ function Board(props: Props) {
     setTodoLists((curr) => {
       return [
         ...curr,
-        { id: new GUID(), title: "", description: "", items: [] },
+        { id: createId(), title: "", description: "", items: [] },
       ];
     });
   }, []);
@@ -31,9 +31,7 @@ function Board(props: Props) {
         <Stack direction="row" spacing={2} alignSelf="center">
           {todoLists.length === 0 && "No TodoList"}
           {todoLists.map((list) => {
-            return (
-              <TodoList key={list.id.toString()} listId={list.id.toString()} />
-            );
+            return <TodoList key={list.id} listId={list.id} />;
           })}
         </Stack>
       </Stack>
