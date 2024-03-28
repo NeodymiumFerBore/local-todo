@@ -39,12 +39,10 @@ export default function App() {
     <>
       <CssVarsProvider defaultMode="system">
         <ThemeToggle />
-        <TodoListsContext.Provider value={{ todoLists, setTodoLists }}>
-          <h1 className="header">Todo List</h1>
-          <Stack sx={{ alignItems: "center" }}>
-            <Board sx={{}} />
-          </Stack>
-        </TodoListsContext.Provider>
+        <h1 className="header">Todo List</h1>
+        <Stack sx={{ alignItems: "center" }}>
+          <Board sx={{}} />
+        </Stack>
       </CssVarsProvider>
     </>
   );
