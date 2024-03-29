@@ -36,6 +36,14 @@ export function NavBar(props: NavBarProps) {
       <Box display="inline-block" padding="6px" justifySelf={"right"}>
         {/* Justified right */}
         <ThemeToggle />
+        <IconButton
+          component="a"
+          aria-label="GitHub"
+          target="_blank"
+          href="https://github.com/NeodymiumFerBore/local-todo"
+        >
+          <GitHub />
+        </IconButton>
       </Box>
     </Box>
   );
