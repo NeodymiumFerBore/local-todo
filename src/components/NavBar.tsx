@@ -16,12 +16,10 @@ export function NavBar(props: NavBarProps) {
       display="grid"
       alignItems="center"
       gridTemplateColumns="minmax(max-content, 1fr) auto minmax(max-content, 1fr)"
-      sx={{
-        backgroundColor: theme.vars.palette.background.surface,
-        flexGrow: 1,
-      }}
+      sx={{ backgroundColor: theme.vars.palette.background.surface }}
     >
-      <Box display="inline-block">
+      <Box display="inline-block" padding="6px" justifySelf={"left"}>
+        {/* Justified Left */}
         <Stack direction="row" alignItems="center" padding={0}>
           <Typography level="title-lg" paddingLeft="10px">
             Local Todo
@@ -33,11 +31,13 @@ export function NavBar(props: NavBarProps) {
           <Button>Add Board</Button>
         </Stack>
       </Box>
-      <Box display="inline-block">
-        <ThemeToggle />
+      <Box display="inline-block" padding="6px">
+        {/* Centered */}
+        <Button>Testing</Button>
       </Box>
-      <Box display="inline-block" padding="6px" sx={{ float: "right" }}>
-        <Typography level="title-lg"></Typography>
+      <Box display="inline-block" padding="6px" justifySelf={"right"}>
+        {/* Justified right */}
+        <ThemeToggle />
       </Box>
     </Box>
   );
