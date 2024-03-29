@@ -13,7 +13,7 @@ export function createId(id?: string): Id {
   if (!isId(id)) {
     throw new Error("Invalid id format");
   }
-  return id as Id;
+  return id;
 }
 
 export type TTodoItem = {
