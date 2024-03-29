@@ -18,22 +18,20 @@ export function NavBar(props: NavBarProps) {
       gridTemplateColumns="minmax(max-content, 1fr) auto minmax(max-content, 1fr)"
       sx={{ backgroundColor: theme.vars.palette.background.surface }}
     >
-      <Box display="inline-block" padding="6px" justifySelf={"left"}>
+      <Box display="inline-block" justifySelf={"left"}>
         {/* Justified Left */}
-        <Stack direction="row" alignItems="center" padding={0}>
-          <Typography level="title-lg" paddingLeft="10px">
+        <Stack direction="row" alignItems="center">
+          <Typography level="title-lg" paddingLeft="20px" paddingRight={"20px"}>
             Local Todo
           </Typography>
-          <Divider
-            orientation="vertical"
-            sx={{ marginLeft: "20px", marginRight: "20px" }}
-          />
-          <Button>Add Board</Button>
+          <Divider orientation="vertical" />
+          <Button color="neutral" variant="plain" size="lg">
+            Add Board
+          </Button>
         </Stack>
       </Box>
       <Box display="inline-block" padding="6px">
         {/* Centered */}
-        <Button>Testing</Button>
       </Box>
       <Box display="inline-block" padding="6px" justifySelf={"right"}>
         {/* Justified right */}
