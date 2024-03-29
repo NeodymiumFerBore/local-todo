@@ -24,10 +24,7 @@ export function NavBar(props: NavBarProps) {
           <Typography level="title-lg" paddingLeft="20px" paddingRight={"20px"}>
             Local Todo
           </Typography>
-          <Divider orientation="vertical" />
-          <Button color="neutral" variant="plain" size="lg">
-            Add Board
-          </Button>
+          {/* <Divider orientation="vertical" /> */}
         </Stack>
       </Box>
       <Box display="inline-block" padding="6px">
