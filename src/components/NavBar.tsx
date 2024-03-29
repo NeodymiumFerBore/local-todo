@@ -1,4 +1,5 @@
-import { Box, Button, Divider, Stack, Typography, useTheme } from "@mui/joy";
+import { Box, Stack, Typography, IconButton, useTheme } from "@mui/joy";
+import { GitHub } from "@mui/icons-material";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function NavBar() {
