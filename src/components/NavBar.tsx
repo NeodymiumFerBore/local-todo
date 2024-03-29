@@ -1,12 +1,7 @@
 import { Box, Button, Divider, Stack, Typography, useTheme } from "@mui/joy";
 import { ThemeToggle } from "./ThemeToggle";
 
-type NavBarProps = {
-  onAddBoard?: () => void;
-  onThemeClick?: () => void;
-};
-
-export function NavBar(props: NavBarProps) {
+export function NavBar() {
   // CSS: https://stackoverflow.com/a/68292664/8184810
   const theme = useTheme();
   return (
