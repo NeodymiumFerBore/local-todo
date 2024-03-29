@@ -12,7 +12,7 @@ interface Props {
   onDelete?: (id: string) => void;
 }
 
-function TodoItem({ thisItem, onChange, onDelete }: Props) {
+function _TodoItem({ thisItem, onChange, onDelete }: Props) {
   function notifyDone() {
     onChange?.(thisItem.id, "done");
   }
@@ -21,6 +21,7 @@ function TodoItem({ thisItem, onChange, onDelete }: Props) {
     onDelete?.(thisItem.id);
   }
 
+  console.log("Rendering item", thisItem.id);
   return (
     <ListItem
       startAction={<Checkbox checked={thisItem.done} onChange={notifyDone} />}
@@ -41,4 +42,4 @@ function TodoItem({ thisItem, onChange, onDelete }: Props) {
   );
 }
 
-export default memo<Props>(TodoItem);
+export const TodoItem = memo<Props>(_TodoItem);

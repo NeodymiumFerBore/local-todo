@@ -4,7 +4,7 @@ import { TTodoItem, createId } from "@/types";
 import Card from "@mui/joy/Card";
 import AddIcon from "@mui/icons-material/Add";
 import { Input, Button, Typography, List } from "@mui/joy";
-import TodoItem, { todoChangeEvent } from "./TodoItem";
+import { TodoItem, todoChangeEvent } from "./TodoItem";
 
 type Props = {
   listId: string;
