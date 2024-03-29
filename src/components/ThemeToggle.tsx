@@ -13,7 +13,7 @@ export function ThemeToggle() {
 
   return (
     <IconButton
-      variant="solid"
+      variant="plain"
       color="neutral"
       onClick={() => setMode(effectiveMode() === "dark" ? "light" : "dark")}
     >

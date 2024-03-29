@@ -5,6 +5,7 @@ import { TTodoItem, TTodoList, createId } from "./types";
 import { CssVarsProvider, Stack } from "@mui/joy";
 import { ThemeToggle } from "./components/ThemeToggle";
 import Board from "./components/Board";
+import { NavBar } from "./components/NavBar";
 
 export default function App() {
   // const [todos, setTodos] = useState(() => {
@@ -38,8 +39,7 @@ export default function App() {
   return (
     <>
       <CssVarsProvider defaultMode="system">
-        <ThemeToggle />
-        <h1 className="header">Todo List</h1>
+        <NavBar />
         <Stack sx={{ alignItems: "center" }}>
           <Board sx={{}} />
         </Stack>
