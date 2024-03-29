@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, IconButton, useTheme } from "@mui/joy";
-import { GitHub } from "@mui/icons-material";
+import { Construction, GitHub } from "@mui/icons-material";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function NavBar() {
@@ -25,6 +25,15 @@ export function NavBar() {
       </Box>
       <Box display="inline-block" padding="6px">
         {/* Centered */}
+        <Typography
+          color="warning"
+          variant="soft"
+          padding="6px"
+          startDecorator={<Construction />}
+          endDecorator={<Construction />}
+        >
+          Under construction
+        </Typography>
       </Box>
       <Box display="inline-block" padding="6px" justifySelf={"right"}>
         {/* Justified right */}
