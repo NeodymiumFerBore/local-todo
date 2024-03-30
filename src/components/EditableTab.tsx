@@ -1,4 +1,4 @@
-import { Input, Tab, TabProps, Typography } from "@mui/joy";
+import { Chip, ChipDelete, Input, Tab, TabProps } from "@mui/joy";
 import {
   BaseSyntheticEvent,
   ElementRef,
@@ -14,9 +14,15 @@ import {
 type EditableTabProps = TabProps & {
   initialName?: string;
   onRename?: (s: string) => void;
+  onDelete?: () => void;
 };
 
-function _EditableTab({ initialName, onRename, ...rest }: EditableTabProps) {
+function _EditableTab({
+  initialName,
+  onRename,
+  onDelete,
+  ...rest
+}: EditableTabProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(initialName || "");
   const inputRef = useRef<ElementRef<"input"> | undefined>();
@@ -46,6 +52,7 @@ function _EditableTab({ initialName, onRename, ...rest }: EditableTabProps) {
         ...rest.sx,
         paddingTop: 0,
         paddingBottom: 0,
+        paddingLeft: "12px",
         ":focus-visible": { color: "transparent" },
         "&.Mui-selected": { outline: "none" },
       }}
@@ -68,10 +75,31 @@ function _EditableTab({ initialName, onRename, ...rest }: EditableTabProps) {
       </form>
     </Tab>
   ) : (
-    <Tab {...rest} sx={{ ...rest.sx, "&.Mui-selected": { outline: "none" } }}>
-      <div onDoubleClick={startEdit}>
-        <Typography level="body-md">{name}</Typography>
-      </div>
+    <Tab
+      {...rest}
+      sx={{
+        ...rest.sx,
+        padding: 0,
+        ":focus-visible": { color: "transparent" },
+        "&.Mui-selected": { outline: "none" },
+      }}
+      slotProps={{ root: { onDoubleClick: startEdit } }}
+    >
+      <Chip
+        size="lg"
+        sx={{ backgroundColor: "transparent" }}
+        endDecorator={
+          onDelete && (
+            <ChipDelete
+              variant="plain"
+              onDelete={onDelete}
+              sx={{ padding: "1px" }}
+            />
+          )
+        }
+      >
+        {name}
+      </Chip>
     </Tab>
   );
 }
