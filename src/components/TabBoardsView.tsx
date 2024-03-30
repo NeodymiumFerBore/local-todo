@@ -1,7 +1,8 @@
-import { Stack, Tab, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
-import Board from "./Board";
-import { Id, TBoard } from "@/types";
 import { useState } from "react";
+import { Stack, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
+import { Id, TBoard } from "@/types";
+import Board from "./Board";
+import { EditableTab } from "./EditableTab";
 
 export function TabBoardsView() {
   const theme = useTheme();
@@ -15,6 +16,16 @@ export function TabBoardsView() {
     },
   ]);
 
+  function renameBoard(name: string, boardId: Id) {
+    setBoards((curr) => {
+      return curr.map((e) => {
+        if (e.id === boardId) return { ...e, title: name };
+        else return e;
+      });
+    });
+  }
+
+  console.log("Rendering TabBoardsView");
   return (
     <Tabs
       size="lg"
@@ -23,9 +34,13 @@ export function TabBoardsView() {
       <TabList disableUnderline>
         {boards.map((board) => {
           return (
-            <Tab key={board.id} variant="plain" color="neutral">
-              {board.title}
-            </Tab>
+            <EditableTab
+              key={board.id}
+              initialName={board.title}
+              variant="plain"
+              color="neutral"
+              onRename={(s) => renameBoard(s, board.id)}
+            />
           );
         })}
       </TabList>
