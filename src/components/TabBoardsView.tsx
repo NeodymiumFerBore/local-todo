@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { IconButton, Stack, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
 import { Add } from "@mui/icons-material";
-import { Id, TBoard, newBoard } from "@/types";
+import { Id, TBoard, createId, newBoard } from "@/types";
 import Board from "./Board";
 import { EditableTab } from "./EditableTab";
 
@@ -16,6 +16,9 @@ export function TabBoardsView() {
       whenModified: new Date(),
     },
   ]);
+  const [selected, setSelected] = useState<Id | null>(
+    boards.length > 0 ? boards[0].id : null
+  );
 
   function renameBoard(name: string, boardId: Id) {
     setBoards((curr) => {
@@ -28,7 +31,15 @@ export function TabBoardsView() {
 
   console.log("Rendering TabBoardsView");
   return (
-    <Tabs size="lg">
+    <Tabs
+      size="lg"
+      value={selected}
+      onChange={(_, v) => {
+        // When deleting a tab, it also triggers a tab change.
+        // Check if tab still exists before switching to it.
+        if (boards.some((board) => board.id === v)) setSelected(v as Id);
+      }}
+    >
       <TabList
         disableUnderline
         sx={{
@@ -47,9 +58,17 @@ export function TabBoardsView() {
               initialName={board.title}
               variant="plain"
               color="neutral"
-              onDelete={() =>
-                setBoards((curr) => curr.filter((e) => e.id !== board.id))
-              }
+              onDelete={() => {
+                // If deleted tab is the currently selected, select another one if possible
+                if (selected === board.id && boards.length > 1) {
+                  const i = boards.findIndex((e) => e.id === board.id);
+                  // Try to select next tab. Visually, it looks like selection stays in place
+                  setSelected(
+                    i < boards.length - 1 ? boards[i + 1].id : boards[i - 1].id
+                  );
+                }
+                setBoards((curr) => curr.filter((e) => e.id !== board.id));
+              }}
               onRename={(s) => renameBoard(s, board.id)}
               sx={{
                 flex: "none",
@@ -60,9 +79,14 @@ export function TabBoardsView() {
         })}
         <IconButton
           key={crypto.randomUUID()}
-          onClick={() =>
-            setBoards((curr) => [...curr, newBoard({ title: "New Board" })])
-          }
+          onClick={() => {
+            const newBoardId = createId();
+            setBoards((curr) => [
+              ...curr,
+              newBoard({ id: newBoardId, title: "New Board" }),
+            ]);
+            setSelected(newBoardId);
+          }}
         >
           <Add />
         </IconButton>
