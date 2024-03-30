@@ -1,4 +1,13 @@
-import { Chip, ChipDelete, Input, Tab, TabProps } from "@mui/joy";
+import { Close } from "@mui/icons-material";
+import {
+  Box,
+  Input,
+  Stack,
+  Tab,
+  TabProps,
+  Typography,
+  useTheme,
+} from "@mui/joy";
 import {
   BaseSyntheticEvent,
   ElementRef,
@@ -26,6 +35,7 @@ function _EditableTab({
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(initialName || "");
   const inputRef = useRef<ElementRef<"input"> | undefined>();
+  const theme = useTheme();
 
   useEffect(() => {
     onRename?.(name);
@@ -77,29 +87,28 @@ function _EditableTab({
   ) : (
     <Tab
       {...rest}
-      sx={{
-        ...rest.sx,
-        padding: 0,
-        ":focus-visible": { color: "transparent" },
-        "&.Mui-selected": { outline: "none" },
-      }}
+      variant="soft"
+      sx={{ ...rest.sx, paddingLeft: "12px", paddingRight: "6px" }}
       slotProps={{ root: { onDoubleClick: startEdit } }}
     >
-      <Chip
-        size="lg"
-        sx={{ backgroundColor: "transparent" }}
-        endDecorator={
-          onDelete && (
-            <ChipDelete
-              variant="plain"
-              onDelete={onDelete}
-              sx={{ padding: "1px" }}
-            />
-          )
-        }
-      >
-        {name}
-      </Chip>
+      <Stack padding={0} direction={"row"} alignItems={"center"}>
+        <Typography paddingRight={"4px"}>{name}</Typography>
+        <Box
+          onClick={onDelete}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          padding="2px"
+          sx={{
+            borderRadius: "50%",
+            ":hover": {
+              backgroundColor: theme.vars.palette.neutral.plainHoverBg,
+            },
+          }}
+        >
+          <Close sx={{ height: "16px", width: "16px" }} />
+        </Box>
+      </Stack>
     </Tab>
   );
 }
