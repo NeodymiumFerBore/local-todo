@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Stack, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
-import { Id, TBoard } from "@/types";
+import { Stack, Tab, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
+import { Add } from "@mui/icons-material";
+import { Id, TBoard, newBoard } from "@/types";
 import Board from "./Board";
 import { EditableTab } from "./EditableTab";
 
@@ -29,7 +30,12 @@ export function TabBoardsView() {
   return (
     <Tabs
       size="lg"
-      sx={{ backgroundColor: theme.vars.palette.background.level1 }}
+      onChange={(_, i) => {
+        console.log("board length:", boards.length, "i:", i);
+        if (i === boards.length) {
+          setBoards((curr) => [...curr, newBoard({ title: "New Board" })]);
+        }
+      }}
     >
       <TabList disableUnderline>
         {boards.map((board) => {
@@ -43,11 +49,15 @@ export function TabBoardsView() {
             />
           );
         })}
+        <Tab key={crypto.randomUUID()}>
+          <Add />
+        </Tab>
       </TabList>
-      {boards.map((board) => {
+      {boards.map((board, i) => {
         return (
           <TabPanel
             key={board.id}
+            value={i}
             sx={{ backgroundColor: theme.vars.palette.background.level1 }}
           >
             <Stack sx={{ alignItems: "center" }}>
