@@ -88,26 +88,32 @@ function _EditableTab({
     <Tab
       {...rest}
       variant="soft"
-      sx={{ ...rest.sx, paddingLeft: "12px", paddingRight: "6px" }}
+      sx={{
+        ...rest.sx,
+        paddingLeft: "12px",
+        paddingRight: onDelete ? "6px" : "12px",
+      }}
       slotProps={{ root: { onDoubleClick: startEdit } }}
     >
-      <Stack padding={0} direction={"row"} alignItems={"center"}>
-        <Typography paddingRight={"4px"}>{name}</Typography>
-        <Box
-          onClick={onDelete}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          padding="2px"
-          sx={{
-            borderRadius: "50%",
-            ":hover": {
-              backgroundColor: theme.vars.palette.neutral.plainHoverBg,
-            },
-          }}
-        >
-          <Close sx={{ height: "16px", width: "16px" }} />
-        </Box>
+      <Stack padding={0} direction={"row"} alignItems={"center"} spacing="6px">
+        <Typography>{name}</Typography>
+        {onDelete && (
+          <Box
+            onClick={onDelete}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            padding="2px"
+            sx={{
+              borderRadius: "50%",
+              ":hover": {
+                backgroundColor: theme.vars.palette.neutral.plainHoverBg,
+              },
+            }}
+          >
+            <Close sx={{ height: "16px", width: "16px" }} />
+          </Box>
+        )}
       </Stack>
     </Tab>
   );
