@@ -69,10 +69,9 @@ function _EditableTab({ initialName, onRename, ...rest }: EditableTabProps) {
     </Tab>
   ) : (
     <Tab {...rest} sx={{ ...rest.sx, "&.Mui-selected": { outline: "none" } }}>
-      <div
-        onDoubleClick={startEdit}
-        children={<Typography level="body-md">{name}</Typography>}
-      />
+      <div onDoubleClick={startEdit}>
+        <Typography level="body-md">{name}</Typography>
+      </div>
     </Tab>
   );
 }
