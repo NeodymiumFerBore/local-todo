@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Stack, Tab, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
+import { IconButton, Stack, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
 import { Add } from "@mui/icons-material";
 import { Id, TBoard, newBoard } from "@/types";
 import Board from "./Board";
@@ -10,7 +10,7 @@ export function TabBoardsView() {
   const [boards, setBoards] = useState<TBoard[]>([
     {
       id: crypto.randomUUID() as Id,
-      title: "test",
+      title: "Board 1",
       description: "test description",
       whenCreated: new Date(),
       whenModified: new Date(),
@@ -28,37 +28,51 @@ export function TabBoardsView() {
 
   console.log("Rendering TabBoardsView");
   return (
-    <Tabs
-      size="lg"
-      onChange={(_, i) => {
-        console.log("board length:", boards.length, "i:", i);
-        if (i === boards.length) {
-          setBoards((curr) => [...curr, newBoard({ title: "New Board" })]);
-        }
-      }}
-    >
-      <TabList disableUnderline>
+    <Tabs size="lg">
+      <TabList
+        disableUnderline
+        sx={{
+          overflow: "auto",
+          scrollSnapType: "x mandatory",
+          backgroundColor: theme.vars.palette.background.level1,
+          ":hover": theme.vars.palette.background.level2,
+          "&::-webkit-scrollbar": { display: "none" },
+        }}
+      >
         {boards.map((board) => {
           return (
             <EditableTab
               key={board.id}
+              value={board.id}
               initialName={board.title}
               variant="plain"
               color="neutral"
+              onDelete={() =>
+                setBoards((curr) => curr.filter((e) => e.id !== board.id))
+              }
               onRename={(s) => renameBoard(s, board.id)}
+              sx={{
+                flex: "none",
+                scrollSnapAlign: "start",
+              }}
             />
           );
         })}
-        <Tab key={crypto.randomUUID()}>
+        <IconButton
+          key={crypto.randomUUID()}
+          onClick={() =>
+            setBoards((curr) => [...curr, newBoard({ title: "New Board" })])
+          }
+        >
           <Add />
-        </Tab>
+        </IconButton>
       </TabList>
-      {boards.map((board, i) => {
+      {boards.map((board) => {
         return (
           <TabPanel
             key={board.id}
-            value={i}
-            sx={{ backgroundColor: theme.vars.palette.background.level1 }}
+            value={board.id}
+            sx={{ backgroundColor: "#333" }}
           >
             <Stack sx={{ alignItems: "center" }}>
               <Board boardId={board.id} sx={{}} />
