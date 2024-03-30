@@ -38,7 +38,7 @@ export type TBoard = {
   whenModified: Date;
 };
 
-export function newBoard(args: Partial<TBoard>): TBoard {
+export function newBoard(args: Partial<TBoard> = {}): TBoard {
   const now = new Date();
   return {
     id: createId(args.id),
