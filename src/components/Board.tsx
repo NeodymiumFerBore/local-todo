@@ -1,10 +1,11 @@
-import { TTodoList, createId } from "@/types";
+import { TTodoList, Id, createId } from "@/types";
 import { Box, Button, Stack } from "@mui/joy";
 import { SxProps } from "@mui/system";
 import { useCallback, useState } from "react";
 import { TodoList } from "./TodoList";
 
 interface Props {
+  boardId: Id;
   sx?: SxProps;
 }
 
@@ -21,7 +22,7 @@ function Board(props: Props) {
     });
   }, []);
 
-  console.log("Rendering Board");
+  console.log("Rendering Board", props.boardId);
   return (
     <>
       <Stack sx={props.sx}>

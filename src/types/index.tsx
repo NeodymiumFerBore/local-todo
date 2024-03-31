@@ -29,3 +29,22 @@ export type TTodoList = {
   description: string;
   items: TTodoItem[];
 };
+
+export type TBoard = {
+  id: Id;
+  title: string;
+  description: string;
+  whenCreated: Date;
+  whenModified: Date;
+};
+
+export function newBoard(args: Partial<TBoard> = {}): TBoard {
+  const now = new Date();
+  return {
+    id: createId(args.id),
+    title: args.title || "",
+    description: args.description || "",
+    whenCreated: args.whenCreated || now,
+    whenModified: args.whenModified || now,
+  };
+}
