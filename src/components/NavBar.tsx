@@ -12,7 +12,7 @@ export function NavBar() {
       display="grid"
       alignItems="center"
       gridTemplateColumns="minmax(max-content, 1fr) auto minmax(max-content, 1fr)"
-      sx={{ backgroundColor: theme.vars.palette.background.surface }}
+      sx={{ backgroundColor: theme.vars.palette.background.level1 }}
     >
       <Box display="inline-block" justifySelf={"left"}>
         {/* Justified Left */}
