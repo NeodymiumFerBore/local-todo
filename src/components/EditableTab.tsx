@@ -38,6 +38,7 @@ function _EditableTab({
   const theme = useTheme();
 
   useEffect(() => {
+    /* eslint-disable react-hooks/exhaustive-deps */
     onRename?.(name);
   }, [name]);
 
