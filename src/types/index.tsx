@@ -16,6 +16,12 @@ export function createId(id?: string): Id {
   return id;
 }
 
+type DBObject = {
+  id: Id;
+  whenCreated: Date;
+  whenModified: Date;
+};
+
 export type TTodoItem = {
   id: Id;
   title: string;
