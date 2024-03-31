@@ -36,12 +36,9 @@ export type TTodoList = {
   items: TTodoItem[];
 };
 
-export type TBoard = {
-  id: Id;
+export type TBoard = DBObject & {
   title: string;
   description: string;
-  whenCreated: Date;
-  whenModified: Date;
 };
 
 export function newBoard(args: Partial<TBoard> = {}): TBoard {
