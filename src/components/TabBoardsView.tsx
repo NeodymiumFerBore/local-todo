@@ -10,7 +10,7 @@ export function TabBoardsView() {
   const [boards, setBoards] = useState<TBoard[]>([
     {
       id: crypto.randomUUID() as Id,
-      title: "Board 1",
+      name: "Board 1",
       description: "test description",
       whenCreated: new Date(),
       whenModified: new Date(),
@@ -54,7 +54,7 @@ export function TabBoardsView() {
             <EditableTab
               key={board.id}
               value={board.id}
-              initialName={board.title}
+              initialName={board.name}
               variant="plain"
               color="neutral"
               onDelete={() => {
@@ -82,7 +82,7 @@ export function TabBoardsView() {
             const newBoardId = createId();
             setBoards((curr) => [
               ...curr,
-              newBoard({ id: newBoardId, title: "New Board" }),
+              newBoard({ id: newBoardId, name: "New Board" }),
             ]);
             setSelected(newBoardId);
           }}

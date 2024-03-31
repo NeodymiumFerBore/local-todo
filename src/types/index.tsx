@@ -37,7 +37,7 @@ export type TTodoList = {
 };
 
 export type TBoard = DBObject & {
-  title: string;
+  name: string;
   description: string;
 };
 
@@ -45,7 +45,7 @@ export function newBoard(args: Partial<TBoard> = {}): TBoard {
   const now = new Date();
   return {
     id: createId(args.id),
-    title: args.title || "",
+    name: args.name || "",
     description: args.description || "",
     whenCreated: args.whenCreated || now,
     whenModified: args.whenModified || now,
