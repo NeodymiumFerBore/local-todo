@@ -47,7 +47,6 @@ export function TabBoardsView() {
           scrollSnapType: "x mandatory",
           backgroundColor: theme.vars.palette.background.level1,
           ":hover": theme.vars.palette.background.level2,
-          "&::-webkit-scrollbar": { display: "none" },
         }}
       >
         {boards.map((board) => {
