@@ -22,7 +22,7 @@ function Board(props: Props) {
     });
   }, []);
 
-  console.log("Rendering Board");
+  console.log("Rendering Board", props.boardId);
   return (
     <>
       <Stack sx={props.sx}>
