@@ -25,3 +25,8 @@ export const loadFromLocalStorage = <T>(
 
   return JSON.parse(localValue) as T;
 };
+
+export const writeToLocalStorage = <T>(key: string, value: T): void => {
+  localStorage.setItem(key, JSON.stringify(value));
+};
+
