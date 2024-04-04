@@ -39,14 +39,23 @@ export type TTodoList = {
 export type TBoard = DBObject & {
   name: string;
   description: string;
+  selected: 0 | 1;
+  viewOrder: number;
+};
+
+export type TViewOrder = DBObject & {
+  type: "Board" | "TodoList" | "TodoItem";
+  order: Id[];
 };
 
 export function newBoard(args: Partial<TBoard> = {}): TBoard {
   const now = new Date();
   return {
     id: createId(args.id),
-    name: args.name || "",
+    name: args.name || "New Board",
     description: args.description || "",
+    selected: args.selected || 0,
+    viewOrder: args.viewOrder,
     whenCreated: args.whenCreated || now,
     whenModified: args.whenModified || now,
   };
