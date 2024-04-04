@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 /**
  * @description Load arbitrary JSON data from local storage, and return it as type T
  * @param key String to search in localStorage
@@ -30,3 +32,18 @@ export const writeToLocalStorage = <T>(key: string, value: T): void => {
   localStorage.setItem(key, JSON.stringify(value));
 };
 
+/**
+ * Unidirectional local storage state hook. Updated state will be written
+ * to localStorage under the given key. However, changes in local storage
+ * will NOT update the state (no watch).
+ */
+export function useLocalStorage<T>(
+  key: string,
+  defaultValue: (T | undefined) | (() => T) = undefined
+): [T, (v: T) => void] {
+  const [state, setState] = useState<T>(
+    loadFromLocalStorage(key, defaultValue)
+  );
+  useEffect(() => writeToLocalStorage(key, state), [state]);
+  return [state, setState];
+}
