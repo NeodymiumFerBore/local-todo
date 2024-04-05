@@ -6,16 +6,18 @@ import Board from "./Board";
 import { EditableTab } from "./EditableTab";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/db";
+import { useLocalStorage } from "@/utils/loadFromLocalStorage";
 
 /**
  * Do not handle selected tab with useLiveQuery. Selecting a tab would instantly
  * select it on another tab, making it impossible to look at different boards
  * at the same time. Use local storage or IDB, but do not watch for changes.
- * Local storage may be easier and more adapted.
+ * Still easier to handle it here: can await for db transaction without defining
+ * async callbacks on consumer side.
  */
 const usePersistentTabBoardsView = (): [
   boards: TBoard[],
-  selected: TBoard | undefined,
+  selected: Id | undefined,
   addBoard: (b?: TBoard) => void,
   deleteBoard: (b: TBoard | Id) => void,
   setSelected: (boardId: Id) => void
@@ -25,14 +27,7 @@ const usePersistentTabBoardsView = (): [
     [],
     []
   );
-  const selected = useLiveQuery(() => db.boards.get({ selected: 1 }));
-  function setSelected(boardId: Id) {
-    console.log("Selecting board:", boardId);
-    db.transaction("rw", db.boards, async () => {
-      db.boards.where({ selected: 1 }).modify({ selected: 0 });
-      db.boards.where({ id: boardId }).modify({ selected: 1 });
-    });
-  }
+  const [selected, setSelected] = useLocalStorage<Id>("selectedBoard");
 
   function addBoard(b?: TBoard) {
     const board = b || newBoard();
@@ -44,50 +39,38 @@ const usePersistentTabBoardsView = (): [
         : Math.max(...boards.map((item) => item.viewOrder)) + 1;
     db.transaction("rw", db.boards, async () => {
       db.boards.add(board);
-      // db.boards.add({
-      //   ...board,
-      //   viewOrder: viewOrder,
-      // });
-      // await setSelected(board);
-      // Unselect any selected board
-      // setSelected(board.id);
-      db.boards.where({ selected: 1 }).modify({ selected: 0 });
-      db.boards.where({ id: board.id }).modify({ selected: 1 });
-
-      // db.boards.where({ selected: 1 }).modify({ selected: 0 });
     });
+    setSelected(board.id);
   }
 
-  function deleteBoard(b: TBoard | Id) {
+  async function deleteBoard(b: TBoard | Id) {
     const boardId = typeof b === "string" ? b : b.id;
     console.log("Removing board:", boardId);
     db.transaction("rw", db.boards, async () => {
-      db.boards.delete(boardId);
+      await db.boards.delete(boardId);
+
+      // If deleted tab is the currently selected, select another one if possible
+      if (selected === boardId && boards.length > 1) {
+        const i = boards.findIndex((e) => e.id === boardId);
+        // Try to select next tab. Visually, it looks like selection stays in place
+        setSelected(
+          i < boards.length - 1 ? boards[i + 1].id : boards[i - 1].id
+        );
+      } else setSelected(selected); // workaround deleted tab being selected
     });
   }
 
-  // async function setSelected(b: TBoard | Id) {
-  //   const board: TBoard | undefined =
-  //     typeof b === "string" ? await db.boards.get({ id: b }) : b;
-  //   if (board === undefined) return;
-
-  //   db.transaction("rw", db.boards, async () => {
-  //     // db.boards.get(selected?.id).then((v) => (v!.selected = false));
-  //     await db.boards.where({ selected: 1 }).modify({ selected: 0 });
-  //     await db.boards.update({ id: board.id }, { selected: 1 });
-  //   }).then(() => console.log("setSelected: transaction complete!"));
-  // }
-
-  return [boards, selected, addBoard, deleteBoard, setSelected]; //, selected, setSelected];
+  return [boards, selected, addBoard, deleteBoard, setSelected];
 };
 
 export function TabBoardsView() {
   const theme = useTheme();
-  // const [boards, addBoard, selected, setSelected] =
   const [boards, selected, addBoard, deleteBoard, setSelected] =
     usePersistentTabBoardsView();
 
+  /** @TODO change to updateBoard, and take Partial<TBoard> as arg */
   function renameBoard(name: string, boardId: Id) {
+    console.log("Renaming board", boardId, name);
     db.boards.where({ id: boardId }).modify((b) => {
       b.name = name;
     });
@@ -98,12 +81,12 @@ export function TabBoardsView() {
     <Tabs
       size="lg"
       // value={selected?.id || null}
-      value={selected?.id || null}
+      value={selected || null}
       onChange={(_, v) => {
         // When deleting a tab, it also triggers a tab change.
         // Check if tab still exists before switching to it.
-        if (boards.some((board) => board.id === v)) setSelected(v as Id);
-        // setSelected(v as Id);
+        // if (boards.some((board) => board.id === v)) setSelected(v as Id);
+        setSelected(v as Id);
       }}
     >
       <TabList
@@ -123,20 +106,7 @@ export function TabBoardsView() {
               initialName={board.name}
               variant="plain"
               color="neutral"
-              // onDelete={() => deleteBoard(board.id)}
-              onDelete={() => {
-                // If deleted tab is the currently selected, select another one if possible
-                if (selected?.id === board.id && boards.length > 1) {
-                  const i = boards.findIndex((e) => e.id === board.id);
-                  // Try to select next tab. Visually, it looks like selection stays in place
-                  setSelected(
-                    i < boards.length - 1 ? boards[i + 1].id : boards[i - 1].id
-                  );
-                }
-                deleteBoard(board.id);
-                // db.boards.where({ id: board.id }).delete();
-                // setBoards((curr) => curr.filter((e) => e.id !== board.id));
-              }}
+              onDelete={() => deleteBoard(board.id)}
               onRename={(s) => renameBoard(s, board.id)}
               sx={{
                 flex: "none",
