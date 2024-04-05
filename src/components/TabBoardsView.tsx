@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
 import { IconButton, Stack, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
 import { Add } from "@mui/icons-material";
-import { Id, TBoard, createId, newBoard } from "@/types";
+import { Id, TBoard, newBoard } from "@/types";
 import Board from "./Board";
 import { EditableTab } from "./EditableTab";
 import { useLiveQuery } from "dexie-react-hooks";
