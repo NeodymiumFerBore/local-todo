@@ -36,9 +36,8 @@ const usePersistentTabBoardsView = (): [
 
   function addBoard(b?: TBoard) {
     const board = b || newBoard();
-    // const newBoardId = createId();
+    board.name = board.id.slice(0, 6);
     // Check length: Math.max will return -Infinity if used on an empty array
-    // const viewOrder =
     board.viewOrder =
       boards.length === 0
         ? 1
@@ -121,7 +120,7 @@ export function TabBoardsView() {
             <EditableTab
               key={board.id}
               value={board.id}
-              initialName={board.id.slice(0, 6)}
+              initialName={board.name}
               variant="plain"
               color="neutral"
               // onDelete={() => deleteBoard(board.id)}
