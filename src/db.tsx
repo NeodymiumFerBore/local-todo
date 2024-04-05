@@ -1,4 +1,4 @@
-import { TBoard, TTodoItem, TTodoList, TViewOrder } from "@/types";
+import { TBoard, TTodoItem, TTodoList } from "@/types";
 import Dexie, { Table } from "dexie";
 
 class LocalTodoDB extends Dexie {
@@ -7,7 +7,6 @@ class LocalTodoDB extends Dexie {
   boards!: Table<TBoard>;
   todoLists!: Table<TTodoList>;
   todos!: Table<TTodoItem>;
-  viewOrders!: Table<TViewOrder>;
 
   constructor() {
     super("local-todo");
@@ -16,7 +15,6 @@ class LocalTodoDB extends Dexie {
       boards: "id, name, &viewOrder, selected",
       todoLists: "id, boardId, name",
       todos: "id, listId",
-      viewOrders: "id, &type",
     });
   }
 }

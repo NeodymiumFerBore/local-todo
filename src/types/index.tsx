@@ -43,11 +43,6 @@ export type TBoard = DBObject & {
   viewOrder: number;
 };
 
-export type TViewOrder = DBObject & {
-  type: "Board" | "TodoList" | "TodoItem";
-  order: Id[];
-};
-
 function newDBObject(args: Partial<DBObject>): DBObject {
   const now = new Date();
   return {
