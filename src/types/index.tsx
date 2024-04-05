@@ -29,11 +29,10 @@ export type TTodoItem = {
   done: boolean;
 };
 
-export type TTodoList = {
-  id: Id;
-  title: string;
+export type TTodoList = DBObject & {
+  name: string;
   description: string;
-  items: TTodoItem[];
+  viewOrder: number;
 };
 
 export type TBoard = DBObject & {
@@ -49,6 +48,15 @@ function newDBObject(args: Partial<DBObject>): DBObject {
     id: createId(args.id),
     whenCreated: args.whenCreated || now,
     whenModified: args.whenModified || now,
+  };
+}
+
+export function newTodoList(args: Partial<TTodoList> = {}): TTodoList {
+  return {
+    ...newDBObject(args),
+    name: args.name || "New List",
+    description: args.description || "",
+    viewOrder: args.viewOrder || 0,
   };
 }
 
