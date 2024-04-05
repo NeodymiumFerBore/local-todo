@@ -36,26 +36,25 @@ const usePersistentTabBoardsView = (): [
       boards.length === 0
         ? 1
         : Math.max(...boards.map((item) => item.viewOrder)) + 1;
-    db.transaction("rw", db.boards, async () => {
-      db.boards.add(board);
+    db.boards.add(board).then(() => {
+      setSelected(board.id);
     });
-    setSelected(board.id);
   }
 
-  async function deleteBoard(b: TBoard | Id) {
+  function deleteBoard(b: TBoard | Id) {
     const boardId = typeof b === "string" ? b : b.id;
     console.log("Removing board:", boardId);
     db.transaction("rw", db.boards, async () => {
-      await db.boards.delete(boardId);
-
-      // If deleted tab is the currently selected, select another one if possible
-      if (selected === boardId && boards.length > 1) {
-        const i = boards.findIndex((e) => e.id === boardId);
-        // Try to select next tab. Visually, it looks like selection stays in place
-        setSelected(
-          i < boards.length - 1 ? boards[i + 1].id : boards[i - 1].id
-        );
-      } else setSelected(selected); // workaround deleted tab being selected
+      db.boards.delete(boardId).then(() => {
+        // If deleted tab is the currently selected, select another one if possible
+        if (selected === boardId && boards.length > 1) {
+          const i = boards.findIndex((e) => e.id === boardId);
+          // Try to select next tab. Visually, it looks like selection stays in place
+          setSelected(
+            i < boards.length - 1 ? boards[i + 1].id : boards[i - 1].id
+          );
+        } else setSelected(selected); // workaround deleted tab being selected
+      });
     });
   }
 
