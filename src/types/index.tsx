@@ -48,15 +48,21 @@ export type TViewOrder = DBObject & {
   order: Id[];
 };
 
-export function newBoard(args: Partial<TBoard> = {}): TBoard {
+function newDBObject(args: Partial<DBObject>): DBObject {
   const now = new Date();
   return {
     id: createId(args.id),
+    whenCreated: args.whenCreated || now,
+    whenModified: args.whenModified || now,
+  };
+}
+
+export function newBoard(args: Partial<TBoard> = {}): TBoard {
+  return {
+    ...newDBObject(args),
     name: args.name || "New Board",
     description: args.description || "",
     selected: args.selected || 0,
-    viewOrder: args.viewOrder,
-    whenCreated: args.whenCreated || now,
-    whenModified: args.whenModified || now,
+    viewOrder: args.viewOrder || -1,
   };
 }
