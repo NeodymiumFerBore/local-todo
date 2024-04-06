@@ -31,6 +31,7 @@ export type TTodoItem = {
 
 export type TTodoList = DBObject & {
   name: string;
+  boardId: Id;
   description: string;
   viewOrder: number;
 };
@@ -58,9 +59,11 @@ function newDBObject(args: Partial<DBObject>): DBObject {
   };
 }
 
-export function newTodoList(args: Partial<TTodoList> = {}): TTodoList {
+type PartialTTodoList = PartialWithRequired<TTodoList, "boardId">;
+export function newTodoList(args: PartialTTodoList): TTodoList {
   return {
     ...newDBObject(args),
+    boardId: args.boardId,
     name: args.name || "New List",
     description: args.description || "",
     viewOrder: args.viewOrder || 0,
