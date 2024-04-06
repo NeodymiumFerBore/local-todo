@@ -42,6 +42,13 @@ export type TBoard = DBObject & {
   viewOrder: number;
 };
 
+// https://github.com/Microsoft/TypeScript/issues/25760
+// type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+// type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
+// All prop are optional but some of those are required
+type PartialWithRequired<T, K extends keyof T> = Pick<T, K> & Partial<T>;
+
 function newDBObject(args: Partial<DBObject>): DBObject {
   const now = new Date();
   return {
