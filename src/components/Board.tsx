@@ -25,11 +25,15 @@ function Board(props: Props) {
   console.log("Rendering Board", props.boardId);
   return (
     <>
-      <Stack sx={props.sx}>
+      <Stack sx={props.sx} spacing={1}>
         <Box justifyContent={"center"} display={"flex"}>
           <Button onClick={addTodoList}>Add List</Button>
         </Box>
-        <Stack direction="row" spacing={2} alignSelf="center">
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{ overflow: "auto", scrollSnapType: "x mandatory" }}
+        >
           {todoLists.length === 0 && "No TodoList"}
           {todoLists.map((list) => {
             return <TodoList key={list.id} listId={list.id} />;

@@ -124,9 +124,7 @@ export function TabBoardsView() {
             value={board.id}
             sx={{ backgroundColor: "#333" }}
           >
-            <Stack sx={{ alignItems: "center" }}>
-              <Board boardId={board.id} sx={{}} />
-            </Stack>
+            <Board boardId={board.id} sx={{}} />
           </TabPanel>
         );
       })}
