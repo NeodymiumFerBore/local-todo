@@ -1,19 +1,26 @@
-import React, { useCallback, useRef, useState } from "react";
-import { TTodoItem, createId } from "@/types";
+import React, { FormEvent, useCallback, useRef, useState } from "react";
+import { TTodoItem, TTodoList, createId } from "@/types";
 
 import Card from "@mui/joy/Card";
 import AddIcon from "@mui/icons-material/Add";
-import { Input, Button, Typography, List } from "@mui/joy";
+import { Input, Button, List, IconButton, Stack, useTheme } from "@mui/joy";
 import { TodoItem, todoChangeEvent } from "./TodoItem";
+import { Close } from "@mui/icons-material";
 
-type Props = {
+// Omit "id" to avoid collision wiht native "id" prop
+type Props = Omit<TTodoList, "id"> & {
   listId: string;
+  onRename?: (s: string) => void;
+  onDelete?: () => void;
 };
 
 // export function TodoList({ todos, toggleTodo, deleteTodo }) {
-export function TodoList({ listId }: Props) {
+export function TodoList({ listId, onRename, onDelete, ...todoList }: Props) {
   const [todos, setTodos] = useState<TTodoItem[]>([]);
   const itemRef = useRef<React.ElementRef<"input"> | undefined>();
+  const listNameRef = useRef<React.ElementRef<"input"> | undefined>();
+  const previousName = useRef(todoList.name);
+  const theme = useTheme();
 
   const addTodo = useCallback((e: React.FormEvent) => {
     e.preventDefault();
@@ -57,12 +64,47 @@ export function TodoList({ listId }: Props) {
     }
   }, []);
 
+  const handleRenameList = useCallback((e: FormEvent) => {
+    e.preventDefault();
+    if (listNameRef.current?.value !== previousName.current) {
+      previousName.current = listNameRef.current!.value;
+      onRename?.(listNameRef.current?.value || "");
+    }
+    listNameRef.current?.blur();
+  }, []);
+
   console.log("Rendering list", listId);
   return (
     <Card
       sx={{ height: "fit-content", flex: "none", scrollSnapAlign: "start" }}
     >
-      <Typography level="title-lg">{listId}</Typography>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <form onSubmit={handleRenameList}>
+          <Input
+            slotProps={{
+              input: { ref: listNameRef as React.RefObject<HTMLInputElement> },
+            }}
+            sx={{
+              backgroundColor: "transparent",
+              ":focus-within": {
+                backgroundColor: theme.vars.palette.neutral.plainActiveBg,
+              },
+              "--Input-focusedThickness": "0px",
+              "&.Mui-selected": { outline: "none" },
+              ":hover:not(:focus-within)": {
+                backgroundColor: theme.vars.palette.neutral.plainHoverBg,
+              },
+            }}
+            onBlur={handleRenameList}
+            placeholder="My List"
+            variant="plain"
+            defaultValue={todoList.name}
+          ></Input>
+        </form>
+        <IconButton onClick={onDelete}>
+          <Close />
+        </IconButton>
+      </Stack>
       <form onSubmit={addTodo}>
         <Input
           slotProps={{
