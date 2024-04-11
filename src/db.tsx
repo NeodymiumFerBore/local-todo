@@ -1,9 +1,23 @@
 import { TBoard, TTodoItem, TTodoList } from "@/types";
 import Dexie, { Table } from "dexie";
-import { cascadeDelete } from "./lib/cascadeDeleteMiddleware";
+import {
+  cascadeDelete,
+  Config as CascadeConfig,
+} from "./lib/cascadeDeleteAddon";
+
+const cascadeConfig: CascadeConfig = {
+  boards: {
+    rTableName: "todoLists",
+    rTableKey: "boardId",
+  },
+  todoLists: {
+    rTableName: "todos",
+    rTableKey: "listId",
+  },
+};
 
 const _db = new Dexie("local-todo", {
-  addons: [cascadeDelete],
+  addons: [cascadeDelete.setConfig(cascadeConfig)],
 }) as Dexie & {
   boards: Table<TBoard>;
   todoLists: Table<TTodoList>;
