@@ -1,4 +1,4 @@
-import { TTodoList, Id, newTodoList } from "@/types";
+import { Id, TTodoList, newTodoList, PartialWithRequired } from "@/types";
 import { Box, Button, Stack } from "@mui/joy";
 import { SxProps } from "@mui/system";
 import { TodoList } from "./TodoList";
@@ -15,7 +15,8 @@ const usePersistentTodoLists = (
 ): [
   todoLists: TTodoList[],
   addTodoList: (list?: TTodoList) => void,
-  deleteTodoList: (list: TTodoList | Id) => void
+  deleteTodoList: (list: TTodoList | Id) => void,
+  updateTodoList: (list: PartialWithRequired<TTodoList, "id">) => void
 ] => {
   const todoLists = useLiveQuery(
     () => db.todoLists.where("boardId").equals(boardId).sortBy("viewOrder"),
@@ -43,22 +44,20 @@ const usePersistentTodoLists = (
     db.todoLists.delete(listId);
   }
 
-  /** @TODO REQUIRE ID */
-  function updateTodoList(l: Partial<TTodoList>) {
-    console.log("Updating list:", l.id);
-    db.todoLists.get({ id: l.id }).then((list) => {
-      db.todoLists.update({ id: l.id }, { ...list, ...l });
-    });
+  function updateTodoList(l: PartialWithRequired<TTodoList, "id">) {
+    console.log("Updating list:", l);
+    const newList: Partial<TTodoList> = { ...l };
+    delete newList["id"];
+    if (Object.keys(newList).length > 0)
+      db.todoLists.update(l.id, { ...newList });
   }
 
-  return [todoLists, addTodoList, deleteTodoList];
+  return [todoLists, addTodoList, deleteTodoList, updateTodoList];
 };
 
 function Board(props: Props) {
-  // const [todoLists, setTodoLists] = useState<TTodoList[]>([]);
-  const [todoLists, addTodoList, deleteTodoList] = usePersistentTodoLists(
-    props.boardId
-  );
+  const [todoLists, addTodoList, deleteTodoList, updateTodoList] =
+    usePersistentTodoLists(props.boardId);
 
   console.log("Rendering Board", props.boardId);
   return (
@@ -74,7 +73,15 @@ function Board(props: Props) {
         >
           {todoLists.length === 0 && "No TodoList"}
           {todoLists.map((list) => {
-            return <TodoList key={list.id} listId={list.id} />;
+            return (
+              <TodoList
+                {...list}
+                key={list.id}
+                listId={list.id}
+                onRename={(s) => updateTodoList({ id: list.id, name: s })}
+                onDelete={() => deleteTodoList(list.id)}
+              />
+            );
           })}
         </Stack>
       </Stack>

@@ -48,7 +48,7 @@ export type TBoard = DBObject & {
 // type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 // All prop are optional but some of those are required
-type PartialWithRequired<T, K extends keyof T> = Pick<T, K> & Partial<T>;
+export type PartialWithRequired<T, K extends keyof T> = Pick<T, K> & Partial<T>;
 
 function newDBObject(args: Partial<DBObject>): DBObject {
   const now = new Date();
