@@ -29,11 +29,11 @@ export type TTodoItem = {
   done: boolean;
 };
 
-export type TTodoList = {
-  id: Id;
-  title: string;
+export type TTodoList = DBObject & {
+  name: string;
+  boardId: Id;
   description: string;
-  items: TTodoItem[];
+  viewOrder: number;
 };
 
 export type TBoard = DBObject & {
@@ -43,12 +43,30 @@ export type TBoard = DBObject & {
   viewOrder: number;
 };
 
+// https://github.com/Microsoft/TypeScript/issues/25760
+// type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+// type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
+// All prop are optional but some of those are required
+type PartialWithRequired<T, K extends keyof T> = Pick<T, K> & Partial<T>;
+
 function newDBObject(args: Partial<DBObject>): DBObject {
   const now = new Date();
   return {
     id: createId(args.id),
     whenCreated: args.whenCreated || now,
     whenModified: args.whenModified || now,
+  };
+}
+
+type PartialTTodoList = PartialWithRequired<TTodoList, "boardId">;
+export function newTodoList(args: PartialTTodoList): TTodoList {
+  return {
+    ...newDBObject(args),
+    boardId: args.boardId,
+    name: args.name || "New List",
+    description: args.description || "",
+    viewOrder: args.viewOrder || 0,
   };
 }
 

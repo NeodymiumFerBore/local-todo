@@ -57,8 +57,11 @@ export function TodoList({ listId }: Props) {
     }
   }, []);
 
+  console.log("Rendering list", listId);
   return (
-    <Card sx={{ height: "fit-content" }}>
+    <Card
+      sx={{ height: "fit-content", flex: "none", scrollSnapAlign: "start" }}
+    >
       <Typography level="title-lg">{listId}</Typography>
       <form onSubmit={addTodo}>
         <Input

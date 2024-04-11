@@ -1,22 +1,34 @@
 import { TBoard, TTodoItem, TTodoList } from "@/types";
 import Dexie, { Table } from "dexie";
+import {
+  cascadeDelete,
+  Config as CascadeConfig,
+} from "./lib/cascadeDeleteAddon";
 
-class LocalTodoDB extends Dexie {
-  // Tables are added by dexie when declaring the stores()
-  // We just tell the typing system this is the case
-  boards!: Table<TBoard>;
-  todoLists!: Table<TTodoList>;
-  todos!: Table<TTodoItem>;
+const cascadeConfig: CascadeConfig = {
+  boards: {
+    rTableName: "todoLists",
+    rTableKey: "boardId",
+  },
+  todoLists: {
+    rTableName: "todos",
+    rTableKey: "listId",
+  },
+};
 
-  constructor() {
-    super("local-todo");
-    this.version(1).stores({
-      // Primary key and indexed props
-      boards: "id, name, &viewOrder, selected",
-      todoLists: "id, boardId, name",
-      todos: "id, listId",
-    });
-  }
-}
+const _db = new Dexie("local-todo", {
+  addons: [cascadeDelete.setConfig(cascadeConfig)],
+}) as Dexie & {
+  boards: Table<TBoard>;
+  todoLists: Table<TTodoList>;
+  todos: Table<TTodoItem>;
+};
 
-export const db = new LocalTodoDB();
+_db.version(1).stores({
+  // Primary key and indexed props
+  boards: "id, name, &viewOrder, selected",
+  todoLists: "id, boardId, name, [boardId+viewOrder]",
+  todos: "id, listId",
+});
+
+export const db = _db;

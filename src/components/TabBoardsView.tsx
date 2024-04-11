@@ -44,8 +44,9 @@ const usePersistentTabBoardsView = (): [
   function deleteBoard(b: TBoard | Id) {
     const boardId = typeof b === "string" ? b : b.id;
     console.log("Removing board:", boardId);
-    db.transaction("rw", db.boards, async () => {
-      db.boards.delete(boardId).then(() => {
+    db.boards
+      .delete(boardId)
+      .then(() => {
         // If deleted tab is the currently selected, select another one if possible
         if (selected === boardId && boards.length > 1) {
           const i = boards.findIndex((e) => e.id === boardId);
@@ -54,8 +55,11 @@ const usePersistentTabBoardsView = (): [
             i < boards.length - 1 ? boards[i + 1].id : boards[i - 1].id
           );
         } else setSelected(selected); // workaround deleted tab being selected
+      })
+      .catch((e) => {
+        console.error(e);
+        throw e;
       });
-    });
   }
 
   return [boards, selected, addBoard, deleteBoard, setSelected];
@@ -124,9 +128,7 @@ export function TabBoardsView() {
             value={board.id}
             sx={{ backgroundColor: "#333" }}
           >
-            <Stack sx={{ alignItems: "center" }}>
-              <Board boardId={board.id} sx={{}} />
-            </Stack>
+            <Board boardId={board.id} sx={{}} />
           </TabPanel>
         );
       })}
