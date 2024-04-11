@@ -79,6 +79,7 @@ function Board(props: Props) {
                 key={list.id}
                 listId={list.id}
                 onRename={(s) => updateTodoList({ id: list.id, name: s })}
+                onDelete={() => deleteTodoList(list.id)}
               />
             );
           })}
