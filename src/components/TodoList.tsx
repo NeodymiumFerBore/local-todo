@@ -1,68 +1,80 @@
-import React, { FormEvent, useCallback, useRef, useState } from "react";
-import { TTodoItem, TTodoList, createId } from "@/types";
+import React, { FormEvent, useCallback, useRef } from "react";
+import {
+  Id,
+  PartialWithRequired,
+  TTodoItem,
+  TTodoList,
+  newTodoItem,
+} from "@/types";
 
 import Card from "@mui/joy/Card";
 import AddIcon from "@mui/icons-material/Add";
-import { Input, Button, List, IconButton, Stack, useTheme } from "@mui/joy";
-import { TodoItem, todoChangeEvent } from "./TodoItem";
 import { Close } from "@mui/icons-material";
+import { Input, Button, List, IconButton, Stack, useTheme } from "@mui/joy";
+import { TodoItem } from "./TodoItem";
+
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "@/db";
 
 // Omit "id" to avoid collision wiht native "id" prop
 type Props = Omit<TTodoList, "id"> & {
-  listId: string;
+  listId: Id;
   onRename?: (s: string) => void;
   onDelete?: () => void;
 };
 
+const usePersistentTodoItems = (
+  listId: Id
+): [
+  todoItems: TTodoItem[],
+  addTodoItem: (todo: Partial<TTodoItem>) => void,
+  deleteTodoItem: (todo: TTodoItem | Id) => void,
+  updateTodoItem: (todo: PartialWithRequired<TTodoItem, "id">) => void
+] => {
+  const todoItems = useLiveQuery(
+    () => db.todos.where("listId").equals(listId).sortBy("viewOrder"),
+    [listId],
+    []
+  );
+
+  function addTodoItem(t: Partial<TTodoItem>) {
+    const todo = newTodoItem({ listId, ...t });
+    // Check length: Math.max will return -Infinity if used on an empty array
+    todo.viewOrder =
+      todoItems.length === 0
+        ? 0
+        : Math.max(...todoItems.map((item) => item.viewOrder)) + 1;
+    db.todos.add(todo).catch((e) => {
+      console.error(e);
+      throw e;
+    });
+  }
+
+  function deleteTodoItem(todo: TTodoItem | Id) {
+    const todoId = typeof todo === "string" ? todo : todo.id;
+    console.log("Removing todo:", todoId);
+    db.todos.delete(todoId);
+  }
+
+  function updateTodoItem(todo: PartialWithRequired<TTodoItem, "id">) {
+    console.log("Updating todo:", todo);
+    const newTodo: Partial<TTodoItem> = { ...todo };
+    delete newTodo["id"];
+    Object.keys(newTodo).length > 0 && db.todos.update(todo.id, { ...newTodo });
+  }
+
+  return [todoItems, addTodoItem, deleteTodoItem, updateTodoItem];
+};
+
 // export function TodoList({ todos, toggleTodo, deleteTodo }) {
 export function TodoList({ listId, onRename, onDelete, ...todoList }: Props) {
-  const [todos, setTodos] = useState<TTodoItem[]>([]);
+  // const [todos, setTodos] = useState<TTodoItem[]>([]);
+  const [todos, addTodo, deleteTodo, updateTodo] =
+    usePersistentTodoItems(listId);
   const itemRef = useRef<React.ElementRef<"input"> | undefined>();
   const listNameRef = useRef<React.ElementRef<"input"> | undefined>();
   const previousName = useRef(todoList.name);
   const theme = useTheme();
-
-  const addTodo = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-    setTodos((curr) => {
-      return [
-        ...curr,
-        {
-          id: createId(),
-          title: itemRef.current?.value || "",
-          description: "",
-          done: false,
-        },
-      ];
-    });
-  }, []);
-
-  const removeTodo = useCallback((id: string) => {
-    setTodos((curr) => {
-      return curr.filter((e) => e.id !== id);
-    });
-  }, []);
-
-  const updateTodo = useCallback((id: string, type: todoChangeEvent) => {
-    switch (type) {
-      case "done": {
-        setTodos((curr) => {
-          return curr.map((e) => {
-            if (e.id === id) return { ...e, done: !e.done };
-            else return e;
-          });
-        });
-        break;
-      }
-      case "update": {
-        console.log("Item updated", id);
-        break;
-      }
-      default:
-        console.log("Not implemented");
-        break;
-    }
-  }, []);
 
   const handleRenameList = useCallback((e: FormEvent) => {
     e.preventDefault();
@@ -71,6 +83,11 @@ export function TodoList({ listId, onRename, onDelete, ...todoList }: Props) {
       onRename?.(listNameRef.current?.value || "");
     }
     listNameRef.current?.blur();
+  }, []);
+
+  const handleAddTodo = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    addTodo({ name: itemRef.current?.value || "" });
   }, []);
 
   console.log("Rendering list", listId);
@@ -105,7 +122,7 @@ export function TodoList({ listId, onRename, onDelete, ...todoList }: Props) {
           <Close />
         </IconButton>
       </Stack>
-      <form onSubmit={addTodo}>
+      <form onSubmit={handleAddTodo}>
         <Input
           slotProps={{
             input: { ref: itemRef as React.RefObject<HTMLInputElement> },
@@ -124,8 +141,8 @@ export function TodoList({ listId, onRename, onDelete, ...todoList }: Props) {
           return (
             <TodoItem
               thisItem={todo}
-              onChange={updateTodo}
-              onDelete={removeTodo}
+              onChange={(t) => updateTodo({ ...t, id: todo.id })}
+              onDelete={() => deleteTodo(todo.id)}
               key={todo.id}
             />
           );
