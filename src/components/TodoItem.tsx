@@ -8,23 +8,25 @@ export type todoChangeEvent = "done" | "update";
 
 interface Props {
   thisItem: TTodoItem;
-  onChange?: (id: string, type: todoChangeEvent) => void;
-  onDelete?: (id: string) => void;
+  onChange?: (todo: Partial<TTodoItem>) => void;
+  onDelete?: () => void;
 }
 
 function _TodoItem({ thisItem, onChange, onDelete }: Props) {
   function notifyDone() {
-    onChange?.(thisItem.id, "done");
+    onChange?.({ status: thisItem.status === "todo" ? "done" : "todo" });
   }
 
   function notifyDelete() {
-    onDelete?.(thisItem.id);
+    onDelete?.();
   }
 
   console.log("Rendering item", thisItem.id);
   return (
     <ListItem
-      startAction={<Checkbox checked={thisItem.done} onChange={notifyDone} />}
+      startAction={
+        <Checkbox checked={thisItem.status === "done"} onChange={notifyDone} />
+      }
       endAction={
         <IconButton
           aria-label="Delete"
@@ -35,9 +37,9 @@ function _TodoItem({ thisItem, onChange, onDelete }: Props) {
           <Delete />
         </IconButton>
       }
-      style={thisItem.done ? { opacity: 0.6 } : { opacity: 1 }}
+      style={thisItem.status === "done" ? { opacity: 0.6 } : { opacity: 1 }}
     >
-      <ListItemButton>{thisItem.title}</ListItemButton>
+      <ListItemButton>{thisItem.name}</ListItemButton>
     </ListItem>
   );
 }
