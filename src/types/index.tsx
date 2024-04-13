@@ -22,11 +22,14 @@ type DBObject = {
   whenModified: Date;
 };
 
-export type TTodoItem = {
-  id: Id;
-  title: string;
-  description: string;
-  done: boolean;
+export type TTodoStatus = "todo" | "wip" | "done";
+
+export type TTodoItem = DBObject & {
+  name: string;
+  listId: Id;
+  content: string;
+  status: TTodoStatus;
+  viewOrder: number;
 };
 
 export type TTodoList = DBObject & {
@@ -56,6 +59,18 @@ function newDBObject(args: Partial<DBObject>): DBObject {
     id: createId(args.id),
     whenCreated: args.whenCreated || now,
     whenModified: args.whenModified || now,
+  };
+}
+
+type PartialTTodoItem = PartialWithRequired<TTodoItem, "listId">;
+export function newTodoItem(args: PartialTTodoItem): TTodoItem {
+  return {
+    ...newDBObject(args),
+    listId: args.listId,
+    name: args.name || "Todo",
+    content: args.content || "",
+    status: args.status || "todo",
+    viewOrder: args.viewOrder || 0,
   };
 }
 

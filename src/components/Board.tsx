@@ -4,6 +4,7 @@ import { SxProps } from "@mui/system";
 import { TodoList } from "./TodoList";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/db";
+import { useCallback } from "react";
 
 interface Props {
   boardId: Id;
@@ -20,37 +21,46 @@ const usePersistentTodoLists = (
 ] => {
   const todoLists = useLiveQuery(
     () => db.todoLists.where("boardId").equals(boardId).sortBy("viewOrder"),
-    [boardId],
+    [db, boardId],
     []
   );
 
-  function addTodoList(l?: TTodoList) {
-    const list = l || newTodoList({ boardId });
-    list.name = list.id.slice(0, 6);
-    // Check length: Math.max will return -Infinity if used on an empty array
-    list.viewOrder =
-      todoLists.length === 0
-        ? 0
-        : Math.max(...todoLists.map((item) => item.viewOrder)) + 1;
-    db.todoLists.add(list).catch((e) => {
-      console.error(e);
-      throw e;
-    });
-  }
+  const addTodoList = useCallback(
+    (l?: TTodoList) => {
+      const list = l || newTodoList({ boardId });
+      list.name = list.id.slice(0, 6);
+      // Check length: Math.max will return -Infinity if used on an empty array
+      list.viewOrder =
+        todoLists.length === 0
+          ? 0
+          : Math.max(...todoLists.map((item) => item.viewOrder)) + 1;
+      db.todoLists.add(list).catch((e) => {
+        console.error(e);
+        throw e;
+      });
+    },
+    [db, boardId]
+  );
 
-  function deleteTodoList(l: TTodoList | Id) {
-    const listId = typeof l === "string" ? l : l.id;
-    console.log("Removing list:", listId);
-    db.todoLists.delete(listId);
-  }
+  const deleteTodoList = useCallback(
+    (l: TTodoList | Id) => {
+      const listId = typeof l === "string" ? l : l.id;
+      console.log("Removing list:", listId);
+      db.todoLists.delete(listId);
+    },
+    [db, boardId]
+  );
 
-  function updateTodoList(l: PartialWithRequired<TTodoList, "id">) {
-    console.log("Updating list:", l);
-    const newList: Partial<TTodoList> = { ...l };
-    delete newList["id"];
-    if (Object.keys(newList).length > 0)
-      db.todoLists.update(l.id, { ...newList });
-  }
+  const updateTodoList = useCallback(
+    (l: PartialWithRequired<TTodoList, "id">) => {
+      console.log("Updating list:", l);
+      const newList: Partial<TTodoList> = { ...l };
+      delete newList["id"];
+      if (Object.keys(newList).length > 0)
+        db.todoLists.update(l.id, { ...newList });
+    },
+    [db, boardId]
+  );
 
   return [todoLists, addTodoList, deleteTodoList, updateTodoList];
 };

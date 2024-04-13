@@ -28,7 +28,7 @@ _db.version(1).stores({
   // Primary key and indexed props
   boards: "id, name, &viewOrder, selected",
   todoLists: "id, boardId, name, [boardId+viewOrder]",
-  todos: "id, listId",
+  todos: "id, listId, status, [listId+viewOrder]",
 });
 
 export const db = _db;
