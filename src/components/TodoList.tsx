@@ -42,13 +42,16 @@ const usePersistentTodoItems = (
   const addTodoItem = useCallback(
     (t: Partial<TTodoItem>) => {
       const todo = newTodoItem({ listId, ...t });
-      getNextViewOrder("todos", listId).then((res) => {
-        todo.viewOrder = res;
-        db.todos.add(todo).catch((e) => {
+      getNextViewOrder("todos", listId)
+        .then((res) => {
+          todo.viewOrder = res;
+          db.todos.add(todo);
+        })
+        .catch((e) => {
+          console.error("Error adding todo", todo);
           console.error(e);
           throw e;
         });
-      });
     },
     [listId]
   );
@@ -56,7 +59,11 @@ const usePersistentTodoItems = (
   const deleteTodoItem = useCallback((todo: TTodoItem | Id) => {
     const todoId = typeof todo === "string" ? todo : todo.id;
     console.log("Removing todo:", todoId);
-    db.todos.delete(todoId);
+    db.todos.delete(todoId).catch((e) => {
+      console.error("Error removing todo", todo);
+      console.error(e);
+      throw e;
+    });
   }, []);
 
   const updateTodoItem = useCallback(
@@ -65,7 +72,11 @@ const usePersistentTodoItems = (
       const newTodo: Partial<TTodoItem> = { ...todo };
       delete newTodo["id"];
       Object.keys(newTodo).length > 0 &&
-        db.todos.update(todo.id, { ...newTodo });
+        db.todos.update(todo.id, { ...newTodo }).catch((e) => {
+          console.error("Error updating todo", newTodo);
+          console.error(e);
+          throw e;
+        });
     },
     []
   );
