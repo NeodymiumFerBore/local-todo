@@ -1,4 +1,4 @@
-import { IconButton, Stack, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
+import { IconButton, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
 import { Add } from "@mui/icons-material";
 import { Id, TBoard, newBoard } from "@/types";
 import Board from "./Board";
