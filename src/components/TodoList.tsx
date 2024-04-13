@@ -32,7 +32,9 @@ const usePersistentTodoItems = (
   updateTodoItem: (todo: PartialWithRequired<TTodoItem, "id">) => void
 ] => {
   const todoItems = useLiveQuery(
-    () => db.todos.where("listId").equals(listId).reverse().sortBy("viewOrder"),
+    // Do not use Collection.reverse(). For some reason, all todoItems re-render when the collection changes,
+    // but they do not if the consumer component handles the reverse order itself.
+    () => db.todos.where("listId").equals(listId).sortBy("viewOrder"),
     [db, listId],
     []
   );
@@ -142,7 +144,9 @@ export function TodoList({ listId, onRename, onDelete, ...todoList }: Props) {
         />
       </form>
       <List>
-        {todos.map((todo) => {
+        {/* Array.proto.toReversed() added in July 2023. Stick to .reverse() on a
+        shallow copy for now. Worse perf, but better compatibility */}
+        {[...todos].reverse().map((todo) => {
           return (
             <TodoItem
               thisItem={todo}
