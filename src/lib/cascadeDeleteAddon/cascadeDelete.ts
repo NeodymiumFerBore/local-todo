@@ -22,12 +22,13 @@ async function doCascadeDelete(
   const foreignTable = config[table.name];
   const childrenTable = core.table(foreignTable.rTableName);
 
-  for (let key of req.keys) {
+  for (const key of req.keys) {
     const { result: childKeys } = await childrenTable.query({
       trans: req.trans,
       query: {
         index: childrenTable.schema.getIndexByKeyPath(foreignTable.rTableKey)!,
         range: {
+          /* eslint-disable @typescript-eslint/no-unsafe-assignment */
           type: 1, // DBCoreRangeType.Equal
           lower: key,
           upper: key,
