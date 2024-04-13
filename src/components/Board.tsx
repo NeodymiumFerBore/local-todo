@@ -30,9 +30,9 @@ const usePersistentTodoLists = (
       const list = l || newTodoList({ boardId });
 
       getNextViewOrder("todoLists", boardId)
-        .then((res) => {
+        .then(async (res) => {
           list.viewOrder = res;
-          db.todoLists.add(list);
+          await db.todoLists.add(list);
         })
         .catch((e) => {
           console.error("Error adding list", list);
