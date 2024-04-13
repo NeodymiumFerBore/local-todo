@@ -14,7 +14,7 @@ import { Input, Button, List, IconButton, Stack, useTheme } from "@mui/joy";
 import { TodoItem } from "./TodoItem";
 
 import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "@/db";
+import { db, getNextViewOrder } from "@/db";
 
 // Omit "id" to avoid collision wiht native "id" prop
 type Props = Omit<TTodoList, "id"> & {
@@ -32,22 +32,20 @@ const usePersistentTodoItems = (
   updateTodoItem: (todo: PartialWithRequired<TTodoItem, "id">) => void
 ] => {
   const todoItems = useLiveQuery(
-    () => db.todos.where("listId").equals(listId).sortBy("viewOrder"),
-    [listId],
+    () => db.todos.where("listId").equals(listId).reverse().sortBy("viewOrder"),
+    [db, listId],
     []
   );
 
   const addTodoItem = useCallback(
     (t: Partial<TTodoItem>) => {
       const todo = newTodoItem({ listId, ...t });
-      // Check length: Math.max will return -Infinity if used on an empty array
-      todo.viewOrder =
-        todoItems.length === 0
-          ? 0
-          : Math.max(...todoItems.map((item) => item.viewOrder)) + 1;
-      db.todos.add(todo).catch((e) => {
-        console.error(e);
-        throw e;
+      getNextViewOrder("todos", listId).then((res) => {
+        todo.viewOrder = res;
+        db.todos.add(todo).catch((e) => {
+          console.error(e);
+          throw e;
+        });
       });
     },
     [db, listId]
