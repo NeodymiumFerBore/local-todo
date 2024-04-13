@@ -3,7 +3,7 @@ import { Box, Button, Stack } from "@mui/joy";
 import { SxProps } from "@mui/system";
 import { TodoList } from "./TodoList";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "@/db";
+import { db, getNextViewOrder } from "@/db";
 import { useCallback } from "react";
 
 interface Props {
@@ -28,15 +28,13 @@ const usePersistentTodoLists = (
   const addTodoList = useCallback(
     (l?: TTodoList) => {
       const list = l || newTodoList({ boardId });
-      list.name = list.id.slice(0, 6);
-      // Check length: Math.max will return -Infinity if used on an empty array
-      list.viewOrder =
-        todoLists.length === 0
-          ? 0
-          : Math.max(...todoLists.map((item) => item.viewOrder)) + 1;
-      db.todoLists.add(list).catch((e) => {
-        console.error(e);
-        throw e;
+
+      getNextViewOrder("todoLists", boardId).then((res) => {
+        list.viewOrder = res;
+        db.todoLists.add(list).catch((e) => {
+          console.error(e);
+          throw e;
+        });
       });
     },
     [db, boardId]
