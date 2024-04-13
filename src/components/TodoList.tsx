@@ -94,19 +94,25 @@ export function TodoList({ listId, onRename, onDelete, ...todoList }: Props) {
   const previousName = useRef(todoList.name);
   const theme = useTheme();
 
-  const handleRenameList = useCallback((e: FormEvent) => {
-    e.preventDefault();
-    if (listNameRef.current?.value !== previousName.current) {
-      previousName.current = listNameRef.current!.value;
-      onRename?.(listNameRef.current?.value || "");
-    }
-    listNameRef.current?.blur();
-  }, []);
+  const handleRenameList = useCallback(
+    (e: FormEvent) => {
+      e.preventDefault();
+      if (listNameRef.current?.value !== previousName.current) {
+        previousName.current = listNameRef.current!.value;
+        onRename?.(listNameRef.current?.value || "");
+      }
+      listNameRef.current?.blur();
+    },
+    [onRename]
+  );
 
-  const handleAddTodo = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-    addTodo({ name: itemRef.current?.value || "" });
-  }, []);
+  const handleAddTodo = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      addTodo({ name: itemRef.current?.value || "" });
+    },
+    [addTodo]
+  );
 
   console.log("Rendering list", listId);
   return (
