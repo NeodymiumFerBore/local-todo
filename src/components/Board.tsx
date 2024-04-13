@@ -40,21 +40,18 @@ const usePersistentTodoLists = (
           throw e;
         });
     },
-    [db, boardId]
+    [boardId]
   );
 
-  const deleteTodoList = useCallback(
-    (l: TTodoList | Id) => {
-      const listId = typeof l === "string" ? l : l.id;
-      console.log("Removing list:", listId);
-      db.todoLists.delete(listId).catch((e) => {
-        console.error("Error removing list", listId);
-        console.error(e);
-        throw e;
-      });
-    },
-    [db, boardId]
-  );
+  const deleteTodoList = useCallback((l: TTodoList | Id) => {
+    const listId = typeof l === "string" ? l : l.id;
+    console.log("Removing list:", listId);
+    db.todoLists.delete(listId).catch((e) => {
+      console.error("Error removing list", listId);
+      console.error(e);
+      throw e;
+    });
+  }, []);
 
   const updateTodoList = useCallback(
     (l: PartialWithRequired<TTodoList, "id">) => {
@@ -69,7 +66,7 @@ const usePersistentTodoLists = (
         });
       }
     },
-    [db, boardId]
+    []
   );
 
   return [todoLists, addTodoList, deleteTodoList, updateTodoList];
