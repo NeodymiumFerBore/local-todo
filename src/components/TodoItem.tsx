@@ -1,38 +1,41 @@
-import { TTodoItem } from "@/types/index";
+import { Id, PartialWithRequired, TTodoItem } from "@/types/index";
 
 import { Checkbox, IconButton, ListItem, ListItemButton } from "@mui/joy";
 import { Delete } from "@mui/icons-material";
-import { memo } from "react";
+import { memo, useCallback } from "react";
 
-export type todoChangeEvent = "done" | "update";
-
-interface Props {
+type Props = {
   thisItem: TTodoItem;
-  onChange?: (todo: Partial<TTodoItem>) => void;
-  onDelete?: () => void;
-}
+  onChange?: (todo: PartialWithRequired<TTodoItem, "id">) => void;
+  onDelete?: (id: Id) => void;
+};
 
-function _TodoItem({ thisItem, onChange, onDelete }: Props) {
-  function notifyDone() {
-    onChange?.({ status: thisItem.status === "todo" ? "done" : "todo" });
-  }
+function _TodoItem(props: Props) {
+  const { thisItem, onChange, onDelete } = props;
 
-  function notifyDelete() {
-    onDelete?.();
-  }
+  const emitStatus = useCallback(() => {
+    onChange?.({
+      id: thisItem.id,
+      status: thisItem.status === "todo" ? "done" : "todo",
+    });
+  }, [thisItem.status, onChange]);
+
+  const emitOnDelete = useCallback(() => {
+    onDelete?.(thisItem.id);
+  }, [thisItem.id, onDelete]);
 
   console.log("Rendering item", thisItem.id);
   return (
     <ListItem
       startAction={
-        <Checkbox checked={thisItem.status === "done"} onChange={notifyDone} />
+        <Checkbox checked={thisItem.status === "done"} onChange={emitStatus} />
       }
       endAction={
         <IconButton
           aria-label="Delete"
           size="sm"
           color="danger"
-          onClick={notifyDelete}
+          onClick={emitOnDelete}
         >
           <Delete />
         </IconButton>

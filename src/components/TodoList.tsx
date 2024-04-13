@@ -37,31 +37,41 @@ const usePersistentTodoItems = (
     []
   );
 
-  function addTodoItem(t: Partial<TTodoItem>) {
-    const todo = newTodoItem({ listId, ...t });
-    // Check length: Math.max will return -Infinity if used on an empty array
-    todo.viewOrder =
-      todoItems.length === 0
-        ? 0
-        : Math.max(...todoItems.map((item) => item.viewOrder)) + 1;
-    db.todos.add(todo).catch((e) => {
-      console.error(e);
-      throw e;
-    });
-  }
+  const addTodoItem = useCallback(
+    (t: Partial<TTodoItem>) => {
+      const todo = newTodoItem({ listId, ...t });
+      // Check length: Math.max will return -Infinity if used on an empty array
+      todo.viewOrder =
+        todoItems.length === 0
+          ? 0
+          : Math.max(...todoItems.map((item) => item.viewOrder)) + 1;
+      db.todos.add(todo).catch((e) => {
+        console.error(e);
+        throw e;
+      });
+    },
+    [db, listId]
+  );
 
-  function deleteTodoItem(todo: TTodoItem | Id) {
-    const todoId = typeof todo === "string" ? todo : todo.id;
-    console.log("Removing todo:", todoId);
-    db.todos.delete(todoId);
-  }
+  const deleteTodoItem = useCallback(
+    (todo: TTodoItem | Id) => {
+      const todoId = typeof todo === "string" ? todo : todo.id;
+      console.log("Removing todo:", todoId);
+      db.todos.delete(todoId);
+    },
+    [db, listId]
+  );
 
-  function updateTodoItem(todo: PartialWithRequired<TTodoItem, "id">) {
-    console.log("Updating todo:", todo);
-    const newTodo: Partial<TTodoItem> = { ...todo };
-    delete newTodo["id"];
-    Object.keys(newTodo).length > 0 && db.todos.update(todo.id, { ...newTodo });
-  }
+  const updateTodoItem = useCallback(
+    (todo: PartialWithRequired<TTodoItem, "id">) => {
+      console.log("Updating todo:", todo);
+      const newTodo: Partial<TTodoItem> = { ...todo };
+      delete newTodo["id"];
+      Object.keys(newTodo).length > 0 &&
+        db.todos.update(todo.id, { ...newTodo });
+    },
+    [db, listId]
+  );
 
   return [todoItems, addTodoItem, deleteTodoItem, updateTodoItem];
 };
@@ -141,8 +151,8 @@ export function TodoList({ listId, onRename, onDelete, ...todoList }: Props) {
           return (
             <TodoItem
               thisItem={todo}
-              onChange={(t) => updateTodo({ ...t, id: todo.id })}
-              onDelete={() => deleteTodo(todo.id)}
+              onChange={updateTodo}
+              onDelete={deleteTodo}
               key={todo.id}
             />
           );
