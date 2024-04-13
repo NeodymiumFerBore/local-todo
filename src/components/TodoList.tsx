@@ -43,9 +43,9 @@ const usePersistentTodoItems = (
     (t: Partial<TTodoItem>) => {
       const todo = newTodoItem({ listId, ...t });
       getNextViewOrder("todos", listId)
-        .then((res) => {
+        .then(async (res) => {
           todo.viewOrder = res;
-          db.todos.add(todo);
+          await db.todos.add(todo);
         })
         .catch((e) => {
           console.error("Error adding todo", todo);
