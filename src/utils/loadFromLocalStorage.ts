@@ -45,7 +45,7 @@ export function useLocalStorage<T>(
     loadFromLocalStorage(key, defaultValue)
   );
   useEffect(() => {
-    console.log(`Writing to storage: "${key}": ${state}`);
+    console.log(`Writing to storage: "${key}":`, state);
     writeToLocalStorage(key, state);
   }, [key, state]);
   return [state, setState];
