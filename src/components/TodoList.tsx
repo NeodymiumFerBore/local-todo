@@ -48,17 +48,14 @@ const usePersistentTodoItems = (
         });
       });
     },
-    [db, listId]
+    [listId]
   );
 
-  const deleteTodoItem = useCallback(
-    (todo: TTodoItem | Id) => {
-      const todoId = typeof todo === "string" ? todo : todo.id;
-      console.log("Removing todo:", todoId);
-      db.todos.delete(todoId);
-    },
-    [db, listId]
-  );
+  const deleteTodoItem = useCallback((todo: TTodoItem | Id) => {
+    const todoId = typeof todo === "string" ? todo : todo.id;
+    console.log("Removing todo:", todoId);
+    db.todos.delete(todoId);
+  }, []);
 
   const updateTodoItem = useCallback(
     (todo: PartialWithRequired<TTodoItem, "id">) => {
@@ -68,7 +65,7 @@ const usePersistentTodoItems = (
       Object.keys(newTodo).length > 0 &&
         db.todos.update(todo.id, { ...newTodo });
     },
-    [db, listId]
+    []
   );
 
   return [todoItems, addTodoItem, deleteTodoItem, updateTodoItem];
