@@ -18,7 +18,7 @@ function _TodoItem(props: Props) {
       id: thisItem.id,
       status: thisItem.status === "todo" ? "done" : "todo",
     });
-  }, [thisItem.status, onChange]);
+  }, [thisItem.id, thisItem.status, onChange]);
 
   const emitOnDelete = useCallback(() => {
     onDelete?.(thisItem.id);

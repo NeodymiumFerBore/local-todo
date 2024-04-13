@@ -29,35 +29,44 @@ const usePersistentTodoLists = (
     (l?: TTodoList) => {
       const list = l || newTodoList({ boardId });
 
-      getNextViewOrder("todoLists", boardId).then((res) => {
-        list.viewOrder = res;
-        db.todoLists.add(list).catch((e) => {
+      getNextViewOrder("todoLists", boardId)
+        .then(async (res) => {
+          list.viewOrder = res;
+          await db.todoLists.add(list);
+        })
+        .catch((e) => {
+          console.error("Error adding list", list);
           console.error(e);
           throw e;
         });
-      });
     },
-    [db, boardId]
+    [boardId]
   );
 
-  const deleteTodoList = useCallback(
-    (l: TTodoList | Id) => {
-      const listId = typeof l === "string" ? l : l.id;
-      console.log("Removing list:", listId);
-      db.todoLists.delete(listId);
-    },
-    [db, boardId]
-  );
+  const deleteTodoList = useCallback((l: TTodoList | Id) => {
+    const listId = typeof l === "string" ? l : l.id;
+    console.log("Removing list:", listId);
+    db.todoLists.delete(listId).catch((e) => {
+      console.error("Error removing list", listId);
+      console.error(e);
+      throw e;
+    });
+  }, []);
 
   const updateTodoList = useCallback(
     (l: PartialWithRequired<TTodoList, "id">) => {
       console.log("Updating list:", l);
       const newList: Partial<TTodoList> = { ...l };
       delete newList["id"];
-      if (Object.keys(newList).length > 0)
-        db.todoLists.update(l.id, { ...newList });
+      if (Object.keys(newList).length > 0) {
+        db.todoLists.update(l.id, { ...newList }).catch((e) => {
+          console.error("Error updating list", newList);
+          console.error(e);
+          throw e;
+        });
+      }
     },
-    [db, boardId]
+    []
   );
 
   return [todoLists, addTodoList, deleteTodoList, updateTodoList];

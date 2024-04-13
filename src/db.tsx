@@ -44,7 +44,7 @@ export function getNextViewOrder(
     .equals(filterValue)
     .reverse()
     .sortBy("viewOrder")
-    .then((res) => {
+    .then((res: TTodoItem[] | TTodoList[]) => {
       return res.length === 0 ? 0 : res[0].viewOrder + 1;
     });
 }

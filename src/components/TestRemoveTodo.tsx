@@ -46,7 +46,7 @@ export function TestRemoveTodo() {
         ))}
       </select>
       <select onChange={(e) => (selectedTodoRef.current = e.target.value)}>
-        {todos.map((el: any) => (
+        {todos.map((el) => (
           <option key={el.id} value={el.id}>
             {el.id}
           </option>

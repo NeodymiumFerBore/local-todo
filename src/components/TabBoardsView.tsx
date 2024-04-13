@@ -1,4 +1,4 @@
-import { IconButton, Stack, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
+import { IconButton, TabList, TabPanel, Tabs, useTheme } from "@mui/joy";
 import { Add } from "@mui/icons-material";
 import { Id, TBoard, newBoard } from "@/types";
 import Board from "./Board";
@@ -36,9 +36,16 @@ const usePersistentTabBoardsView = (): [
       boards.length === 0
         ? 1
         : Math.max(...boards.map((item) => item.viewOrder)) + 1;
-    db.boards.add(board).then(() => {
-      setSelected(board.id);
-    });
+    db.boards
+      .add(board)
+      .then(() => {
+        setSelected(board.id);
+      })
+      .catch((e) => {
+        console.error("Error adding board", board);
+        console.error(e);
+        throw e;
+      });
   }
 
   function deleteBoard(b: TBoard | Id) {
@@ -57,6 +64,7 @@ const usePersistentTabBoardsView = (): [
         } else setSelected(selected); // workaround deleted tab being selected
       })
       .catch((e) => {
+        console.error("Error removing board", b);
         console.error(e);
         throw e;
       });
@@ -73,9 +81,16 @@ export function TabBoardsView() {
   /** @TODO change to updateBoard, and take Partial<TBoard> as arg */
   function renameBoard(name: string, boardId: Id) {
     console.log("Renaming board", boardId, name);
-    db.boards.where({ id: boardId }).modify((b) => {
-      b.name = name;
-    });
+    db.boards
+      .where({ id: boardId })
+      .modify((b) => {
+        b.name = name;
+      })
+      .catch((e) => {
+        console.error("Error updating board", boardId);
+        console.error(e);
+        throw e;
+      });
   }
 
   console.log("Rendering TabBoardsView");
