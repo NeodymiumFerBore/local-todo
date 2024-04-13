@@ -36,10 +36,13 @@ function _EditableTab({
   const [name, setName] = useState(initialName || "");
   const inputRef = useRef<ElementRef<"input"> | undefined>();
   const theme = useTheme();
+  const didMount = useRef(false);
 
   useEffect(() => {
     /* eslint-disable react-hooks/exhaustive-deps */
-    onRename?.(name);
+    // Avoid trigger on initial render
+    if (didMount.current) onRename?.(name);
+    else didMount.current = true;
   }, [name]);
 
   const startEdit = useCallback((e: BaseSyntheticEvent) => {

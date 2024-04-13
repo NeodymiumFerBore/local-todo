@@ -16,35 +16,81 @@ export function createId(id?: string): Id {
   return id;
 }
 
-export type TTodoItem = {
+type DBObject = {
   id: Id;
-  title: string;
-  description: string;
-  done: boolean;
-};
-
-export type TTodoList = {
-  id: Id;
-  title: string;
-  description: string;
-  items: TTodoItem[];
-};
-
-export type TBoard = {
-  id: Id;
-  title: string;
-  description: string;
   whenCreated: Date;
   whenModified: Date;
 };
 
-export function newBoard(args: Partial<TBoard> = {}): TBoard {
+export type TTodoStatus = "todo" | "wip" | "done";
+
+export type TTodoItem = DBObject & {
+  name: string;
+  listId: Id;
+  content: string;
+  status: TTodoStatus;
+  viewOrder: number;
+};
+
+export type TTodoList = DBObject & {
+  name: string;
+  boardId: Id;
+  description: string;
+  viewOrder: number;
+};
+
+export type TBoard = DBObject & {
+  name: string;
+  description: string;
+  selected: 0 | 1;
+  viewOrder: number;
+};
+
+// https://github.com/Microsoft/TypeScript/issues/25760
+// type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+// type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
+// All prop are optional but some of those are required
+export type PartialWithRequired<T, K extends keyof T> = Pick<T, K> & Partial<T>;
+
+function newDBObject(args: Partial<DBObject>): DBObject {
   const now = new Date();
   return {
     id: createId(args.id),
-    title: args.title || "",
-    description: args.description || "",
     whenCreated: args.whenCreated || now,
     whenModified: args.whenModified || now,
+  };
+}
+
+type PartialTTodoItem = PartialWithRequired<TTodoItem, "listId">;
+export function newTodoItem(args: PartialTTodoItem): TTodoItem {
+  return {
+    ...newDBObject(args),
+    listId: args.listId,
+    name: args.name || "Todo",
+    content: args.content || "",
+    status: args.status || "todo",
+    viewOrder: args.viewOrder || 0,
+  };
+}
+
+type PartialTTodoList = PartialWithRequired<TTodoList, "boardId">;
+export function newTodoList(args: PartialTTodoList): TTodoList {
+  return {
+    ...newDBObject(args),
+    boardId: args.boardId,
+    name: args.name || "New List",
+    description: args.description || "",
+    viewOrder: args.viewOrder || 0,
+  };
+}
+
+export function newBoard(args: Partial<TBoard> = {}): TBoard {
+  return {
+    ...newDBObject(args),
+    name: args.name || "New Board",
+    description: args.description || "",
+    selected: args.selected || 0,
+    viewOrder: args.viewOrder || -1,
   };
 }

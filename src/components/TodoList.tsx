@@ -1,66 +1,152 @@
-import React, { useCallback, useRef, useState } from "react";
-import { TTodoItem, createId } from "@/types";
+import React, { FormEvent, useCallback, useRef } from "react";
+import {
+  Id,
+  PartialWithRequired,
+  TTodoItem,
+  TTodoList,
+  newTodoItem,
+} from "@/types";
 
 import Card from "@mui/joy/Card";
 import AddIcon from "@mui/icons-material/Add";
-import { Input, Button, Typography, List } from "@mui/joy";
-import { TodoItem, todoChangeEvent } from "./TodoItem";
+import { Close } from "@mui/icons-material";
+import { Input, Button, List, IconButton, Stack, useTheme } from "@mui/joy";
+import { TodoItem } from "./TodoItem";
 
-type Props = {
-  listId: string;
+import { useLiveQuery } from "dexie-react-hooks";
+import { db, getNextViewOrder } from "@/db";
+
+// Omit "id" to avoid collision wiht native "id" prop
+type Props = Omit<TTodoList, "id"> & {
+  listId: Id;
+  onRename?: (s: string) => void;
+  onDelete?: () => void;
+};
+
+const usePersistentTodoItems = (
+  listId: Id
+): [
+  todoItems: TTodoItem[],
+  addTodoItem: (todo: Partial<TTodoItem>) => void,
+  deleteTodoItem: (todo: TTodoItem | Id) => void,
+  updateTodoItem: (todo: PartialWithRequired<TTodoItem, "id">) => void
+] => {
+  const todoItems = useLiveQuery(
+    // Do not use Collection.reverse(). For some reason, all todoItems re-render when the collection changes,
+    // but they do not if the consumer component handles the reverse order itself.
+    () => db.todos.where("listId").equals(listId).sortBy("viewOrder"),
+    [db, listId],
+    []
+  );
+
+  const addTodoItem = useCallback(
+    (t: Partial<TTodoItem>) => {
+      const todo = newTodoItem({ listId, ...t });
+      getNextViewOrder("todos", listId)
+        .then(async (res) => {
+          todo.viewOrder = res;
+          await db.todos.add(todo);
+        })
+        .catch((e) => {
+          console.error("Error adding todo", todo);
+          console.error(e);
+          throw e;
+        });
+    },
+    [listId]
+  );
+
+  const deleteTodoItem = useCallback((todo: TTodoItem | Id) => {
+    const todoId = typeof todo === "string" ? todo : todo.id;
+    console.log("Removing todo:", todoId);
+    db.todos.delete(todoId).catch((e) => {
+      console.error("Error removing todo", todo);
+      console.error(e);
+      throw e;
+    });
+  }, []);
+
+  const updateTodoItem = useCallback(
+    (todo: PartialWithRequired<TTodoItem, "id">) => {
+      console.log("Updating todo:", todo);
+      const newTodo: Partial<TTodoItem> = { ...todo };
+      delete newTodo["id"];
+      Object.keys(newTodo).length > 0 &&
+        db.todos.update(todo.id, { ...newTodo }).catch((e) => {
+          console.error("Error updating todo", newTodo);
+          console.error(e);
+          throw e;
+        });
+    },
+    []
+  );
+
+  return [todoItems, addTodoItem, deleteTodoItem, updateTodoItem];
 };
 
 // export function TodoList({ todos, toggleTodo, deleteTodo }) {
-export function TodoList({ listId }: Props) {
-  const [todos, setTodos] = useState<TTodoItem[]>([]);
+export function TodoList({ listId, onRename, onDelete, ...todoList }: Props) {
+  // const [todos, setTodos] = useState<TTodoItem[]>([]);
+  const [todos, addTodo, deleteTodo, updateTodo] =
+    usePersistentTodoItems(listId);
   const itemRef = useRef<React.ElementRef<"input"> | undefined>();
+  const listNameRef = useRef<React.ElementRef<"input"> | undefined>();
+  const previousName = useRef(todoList.name);
+  const theme = useTheme();
 
-  const addTodo = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-    setTodos((curr) => {
-      return [
-        ...curr,
-        {
-          id: createId(),
-          title: itemRef.current?.value || "",
-          description: "",
-          done: false,
-        },
-      ];
-    });
-  }, []);
-
-  const removeTodo = useCallback((id: string) => {
-    setTodos((curr) => {
-      return curr.filter((e) => e.id !== id);
-    });
-  }, []);
-
-  const updateTodo = useCallback((id: string, type: todoChangeEvent) => {
-    switch (type) {
-      case "done": {
-        setTodos((curr) => {
-          return curr.map((e) => {
-            if (e.id === id) return { ...e, done: !e.done };
-            else return e;
-          });
-        });
-        break;
+  const handleRenameList = useCallback(
+    (e: FormEvent) => {
+      e.preventDefault();
+      if (listNameRef.current?.value !== previousName.current) {
+        previousName.current = listNameRef.current!.value;
+        onRename?.(listNameRef.current?.value || "");
       }
-      case "update": {
-        console.log("Item updated", id);
-        break;
-      }
-      default:
-        console.log("Not implemented");
-        break;
-    }
-  }, []);
+      listNameRef.current?.blur();
+    },
+    [onRename]
+  );
 
+  const handleAddTodo = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      addTodo({ name: itemRef.current?.value || "" });
+    },
+    [addTodo]
+  );
+
+  console.log("Rendering list", listId);
   return (
-    <Card sx={{ height: "fit-content" }}>
-      <Typography level="title-lg">{listId}</Typography>
-      <form onSubmit={addTodo}>
+    <Card
+      sx={{ height: "fit-content", flex: "none", scrollSnapAlign: "start" }}
+    >
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <form onSubmit={handleRenameList}>
+          <Input
+            slotProps={{
+              input: { ref: listNameRef as React.RefObject<HTMLInputElement> },
+            }}
+            sx={{
+              backgroundColor: "transparent",
+              ":focus-within": {
+                backgroundColor: theme.vars.palette.neutral.plainActiveBg,
+              },
+              "--Input-focusedThickness": "0px",
+              "&.Mui-selected": { outline: "none" },
+              ":hover:not(:focus-within)": {
+                backgroundColor: theme.vars.palette.neutral.plainHoverBg,
+              },
+            }}
+            onBlur={handleRenameList}
+            placeholder="My List"
+            variant="plain"
+            defaultValue={todoList.name}
+          ></Input>
+        </form>
+        <IconButton onClick={onDelete}>
+          <Close />
+        </IconButton>
+      </Stack>
+      <form onSubmit={handleAddTodo}>
         <Input
           slotProps={{
             input: { ref: itemRef as React.RefObject<HTMLInputElement> },
@@ -75,12 +161,14 @@ export function TodoList({ listId }: Props) {
         />
       </form>
       <List>
-        {todos.map((todo) => {
+        {/* Array.proto.toReversed() added in July 2023. Stick to .reverse() on a
+        shallow copy for now. Worse perf, but better compatibility */}
+        {[...todos].reverse().map((todo) => {
           return (
             <TodoItem
               thisItem={todo}
               onChange={updateTodo}
-              onDelete={removeTodo}
+              onDelete={deleteTodo}
               key={todo.id}
             />
           );
