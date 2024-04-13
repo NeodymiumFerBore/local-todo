@@ -151,7 +151,7 @@ export function TodoList({ listId, onRename, onDelete, ...todoList }: Props) {
           return (
             <TodoItem
               thisItem={todo}
-              // onChange={(t) => handleUpdateTodo({ ...t, id: todo.id })}
+              onChange={updateTodo}
               onDelete={deleteTodo}
               key={todo.id}
             />
