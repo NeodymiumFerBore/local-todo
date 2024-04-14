@@ -3,9 +3,19 @@ name: Docker
 on:
   workflow_dispatch:
   workflow_call:
+  push:
+    branches:
+    - dev
+    - main
+  tags: ["*"]
 
 jobs:
+  quality:
+    name: Quality
+    uses: ./.github/workflows/quality.yaml
+
   docker:
+    needs: quality
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
