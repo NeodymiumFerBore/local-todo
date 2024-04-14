@@ -2,18 +2,12 @@ name: Publish
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-    - main
+  workflow_call:
 
 env:
   BASE_PATH: /local-todo/
 
 jobs:
-  quality:
-    name: Quality
-    uses: ./.github/workflows/quality.yaml
-
   build:
     name: Build
     needs: quality
