@@ -1,0 +1,25 @@
+name: Push
+
+on:
+  push:
+    branches: "*"
+
+jobs:
+  # Always check quality
+  quality:
+    name: Quality
+    uses: ./.github/workflows/quality.yaml
+
+  # Push image only on main/dev
+  docker:
+    name: Publish to Docker Hub
+    if: github.ref_name == 'main' || github.ref_name == 'dev'
+    needs: quality
+    uses: ./.github/workflows/docker.yaml
+
+  # Push to GitHub pages only on main
+  publish:
+    name: Publish to GitHub pages
+    if: github.ref_name == 'main'
+    needs: quality
+    uses: ./.github/workflows/publish.yaml
