@@ -4,10 +4,8 @@ on:
   workflow_dispatch:
   workflow_call:
   push:
-    branches:
-    - dev
-    - main
-  tags: ["*"]
+    branches: [dev, main]
+    tags: ["*"]
 
 jobs:
   quality:
